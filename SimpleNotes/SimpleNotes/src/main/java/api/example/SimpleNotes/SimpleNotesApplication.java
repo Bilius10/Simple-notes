@@ -2,8 +2,10 @@ package api.example.SimpleNotes;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
+@EnableJpaAuditing
 public class SimpleNotesApplication {
     //.\mvnw.cmd clean package -DskipTests
     //docker-compose up --build -d

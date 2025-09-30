@@ -1,18 +1,7 @@
+# docker-compose.yml - VERSÃO SIMPLIFICADA
 version: '3.8'
 
 services:
-  # Serviço da nossa aplicação
-  app:
-    build: .
-    container_name: simplenotes-app
-    ports:
-      - "8080:8080"
-    networks:
-      - monitor-net
-    # Garante que o 'app' só inicie depois que o 'db' estiver pronto
-    depends_on:
-      - db
-
   # Serviço do Prometheus
   prometheus:
     image: prom/prometheus:latest
@@ -26,24 +15,9 @@ services:
     networks:
       - monitor-net
 
-  # NOVO: Serviço do Banco de Dados PostgreSQL
-  db:
-    image: postgres:15
-    container_name: postgres-db
-    environment:
-      POSTGRES_DB: simple_notes
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
-    networks:
-      - monitor-net
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-
-# NOVO: Seção para persistir os dados do banco
-volumes:
-  postgres-data:
+# A seção 'volumes' para o postgres-data não é mais necessária
+# volumes:
+#   postgres-data:
 
 networks:
   monitor-net:
