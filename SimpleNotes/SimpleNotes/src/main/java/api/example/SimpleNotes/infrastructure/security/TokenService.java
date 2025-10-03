@@ -1,28 +1,28 @@
 package api.example.SimpleNotes.infrastructure.security;
 
 import api.example.SimpleNotes.domain.user.User;
+import api.example.SimpleNotes.infrastructure.exception.ServiceException;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import lombok.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import static api.example.SimpleNotes.infrastructure.exception.ExceptionMessages.TOKEN_NOT_GENERATED;
+import static api.example.SimpleNotes.infrastructure.exception.ExceptionMessages.TOKEN_NOT_VALID;
 
 @Service
 public class TokenService {
 
-    @Value("${security.jwt.secret}")
-    private String secret;
+    private final String secret = "teste";
 
-    @Value("${security.jwt.issuer}")
-    private String issuer;
+    private final String issuer = "teste";
 
-    @Value("${security.jwt.expiration-hours}")
-    private long expiration;
+    private final long expiration = 8L;
 
     public String generateToken(User user) {
         try {
@@ -35,7 +35,7 @@ public class TokenService {
                     .sign(algorithm);
 
         } catch (JWTCreationException exception) {
-            throw new JWTCreationException(exception.getLocalizedMessage(), exception);
+            throw new ServiceException(TOKEN_NOT_GENERATED.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -49,7 +49,7 @@ public class TokenService {
                     .getSubject();
 
         } catch (JWTVerificationException exception) {
-            throw new JWTVerificationException(exception.getLocalizedMessage());
+            throw new ServiceException(TOKEN_NOT_VALID.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 

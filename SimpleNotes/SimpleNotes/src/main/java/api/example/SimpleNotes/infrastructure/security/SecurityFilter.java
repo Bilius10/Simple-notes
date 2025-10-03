@@ -1,17 +1,21 @@
 package api.example.SimpleNotes.infrastructure.security;
 
 import api.example.SimpleNotes.domain.user.UserRepository;
+import api.example.SimpleNotes.infrastructure.exception.ServiceException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+
+import static api.example.SimpleNotes.infrastructure.exception.ExceptionMessages.USER_NOT_FOUND;
 
 @Component
 @RequiredArgsConstructor
@@ -29,8 +33,9 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         if (token != null) {
             String email = tokenService.getSubject(token);
+
             var user = repository.findByEmail(email)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+                    .orElseThrow(() -> new ServiceException(USER_NOT_FOUND.getMessage(), HttpStatus.BAD_REQUEST));
 
             var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 

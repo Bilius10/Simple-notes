@@ -22,11 +22,12 @@ import java.util.List;
 @Builder
 @Table(name = "\"user\"")
 @EntityListeners(AuditingEntityListener.class)
+@Entity
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "name")
     private String name;
