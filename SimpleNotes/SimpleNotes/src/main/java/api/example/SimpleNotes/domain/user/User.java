@@ -1,5 +1,7 @@
 package api.example.SimpleNotes.domain.user;
 
+import api.example.SimpleNotes.domain.user_token.UserToken;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
@@ -15,13 +17,11 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
-@Builder
 @Table(name = "\"user\"")
 @EntityListeners(AuditingEntityListener.class)
+@NoArgsConstructor
 @Entity
 public class User implements UserDetails {
 
@@ -38,7 +38,7 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "userRole")
+    @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
@@ -58,6 +58,21 @@ public class User implements UserDetails {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "is_account_non_locked")
+    private boolean isAccountNonLocked;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<UserToken> tokens;
+
+    public User(String email, String name, String password) {
+        this.email = email;
+        this.name = name;
+        this.password = password;
+        this.userRole = UserRole.USER;
+        this.isAccountNonLocked = true;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(String.format("ROLE_%s", this.userRole.name())));
@@ -72,4 +87,10 @@ public class User implements UserDetails {
     public String getUsername() {
         return email;
     }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return isAccountNonLocked;
+    }
+
 }

@@ -6,7 +6,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import java.time.Instant;
@@ -18,11 +18,14 @@ import static api.example.SimpleNotes.infrastructure.exception.ExceptionMessages
 @Service
 public class TokenService {
 
-    private final String secret = "teste";
+    @Value("${security.jwt.secret}")
+    private String secret;
 
-    private final String issuer = "teste";
+    @Value("${security.jwt.issuer}")
+    private String issuer;
 
-    private final long expiration = 8L;
+    @Value("${security.jwt.expiration-hours}")
+    private long expiration;
 
     public String generateToken(User user) {
         try {
