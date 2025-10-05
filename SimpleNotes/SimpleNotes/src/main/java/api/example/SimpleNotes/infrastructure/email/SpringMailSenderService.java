@@ -37,18 +37,18 @@ public class SpringMailSenderService {
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("name", name);
-        variables.put("verificationLink", "http://localhost:8080/auth/confirm-email?token=" + token);
+        variables.put("verificationLink", "http://localhost:4200/confirm-email/" + token);
 
         sendEmailWithTemplate(email, subject, templateName, variables);
     }
 
     public void sendForgotPasswordEmail(String email, String name, String token) {
         String subject = "Redefinição de senha";
-        String templateName = "forgot-password";
+        String templateName = "forgot-password-email";
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("name", name);
-        variables.put("resetLink", "http://localhost:8080/auth/reset-password?token=" + token);
+        variables.put("resetLink", "http://localhost:4200/reset-password/" + token);
 
         sendEmailWithTemplate(email, subject, templateName, variables);
     }

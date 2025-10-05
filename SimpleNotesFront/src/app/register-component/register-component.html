@@ -1,0 +1,57 @@
+<main class="register-container">
+
+  <div class="register-card">
+    <header class="register-header">
+      <img ngSrc="assets/Logo.png" alt="Logo da sua Empresa" class="app-logo" height="1024" width="1024">
+      <h1>Crie sua conta</h1>
+      <p>É rápido e fácil.</p>
+    </header>
+
+    <form (ngSubmit)="onSubmit()">
+
+      <div class="form-group">
+        <label for="name">Nome completo</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          [(ngModel)]="name"
+          required
+          placeholder="Seu nome completo"
+          autocomplete="name">
+      </div>
+
+      <div class="form-group">
+        <label for="email">E-mail</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          [(ngModel)]="email"
+          required
+          placeholder="seu.email@exemplo.com"
+          autocomplete="email">
+      </div>
+
+      <div class="form-group">
+        <label for="password">Senha</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          [(ngModel)]="password"
+          required
+          placeholder="Crie uma senha forte"
+          autocomplete="new-password">
+      </div>
+
+      <p class="response-menssage">{{responseMessage()}}</p>
+      <button type="submit" class="btn btn-primary">Criar conta</button>
+    </form>
+
+    <div class="actions">
+      <a [routerLink]="['/auth/login']" class="btn-link">Já tem uma conta? Entre</a>
+    </div>
+
+  </div>
+</main>

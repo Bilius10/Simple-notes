@@ -1,0 +1,17 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: transparent; /* ou a cor que deseja */
+  box-sizing: border-box;
+}
+
+* {
+  box-sizing: inherit;
+}
+
+app-root {
+  display: block;
+  height: 100%;
+  width: 100%;
+}/* You can add global styles to this file, and also import other style files */

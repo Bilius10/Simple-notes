@@ -1,0 +1,22 @@
+<div class="container">
+  <div class="card">
+    @if (status() === 'loading') {
+      <div class="spinner"></div>
+      <h1>Verificando seu e-mail...</h1>
+      <p>Por favor, aguarde um momento.</p>
+      <button type="submit" class="btn btn-primary" (click)="onSubmit()">Verificar Email</button>
+
+    } @else if (status() === 'success') {
+      <div class="icon success">✓</div>
+      <h1>E-mail Confirmado!</h1>
+      <p>{{ message() }}</p>
+      <a routerLink="/auth/login" class="btn">Ir para o Login</a>
+
+    } @else if (status() === 'error') {
+      <div class="icon error">✗</div>
+      <h1>Ocorreu um Erro</h1>
+      <p>{{ message() }}</p>
+      <a routerLink="/auth/register" class="btn btn-secondary">Tentar novamente</a>
+    }
+  </div>
+</div>

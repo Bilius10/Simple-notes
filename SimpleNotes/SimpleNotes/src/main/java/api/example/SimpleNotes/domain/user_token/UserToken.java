@@ -2,11 +2,11 @@ package api.example.SimpleNotes.domain.user_token;
 
 import api.example.SimpleNotes.domain.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @Table(name = "user_tokens")
 @NoArgsConstructor
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class UserToken {
 
     @Id

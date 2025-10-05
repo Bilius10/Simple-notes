@@ -34,7 +34,6 @@ public class AuthController {
 
     @PatchMapping("/confirm-email")
     public ResponseEntity<Void> confirmEmail(@RequestParam String token) {
-
         service.confirmEmail(token);
 
         return ResponseEntity.noContent().build();
@@ -49,7 +48,7 @@ public class AuthController {
     }
 
     @PatchMapping("/reset-password")
-    public ResponseEntity<Void> resetPassword(@RequestBody ResetPassword request, @RequestParam String token) {
+    public ResponseEntity<Void> resetPassword(@RequestBody @Valid ResetPassword request, @RequestParam String token) {
         service.resetPassword(token, request.newPassword());
 
         return ResponseEntity.noContent().build();

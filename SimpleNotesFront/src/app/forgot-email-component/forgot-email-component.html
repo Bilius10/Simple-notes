@@ -1,0 +1,49 @@
+<main class="reset-container">
+  <div class="password-reset-card">
+
+    <!-- Estado: Formulário -->
+    @if (status() === 'form') {
+      <div id="form-state">
+        <header class="card-header">
+          <h1>Esqueceu a senha?</h1>
+          <p>Sem problemas! Insira seu e-mail abaixo e enviaremos um link para você criar uma nova senha.</p>
+        </header>
+
+        <form (ngSubmit)="onSubmit()" novalidate>
+          <div class="form-group">
+            <label for="email">Seu e-mail</label>
+            <input type="email" id="email" [(ngModel)]="email" name="email" required placeholder="seu.email@exemplo.com" autocomplete="email">
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Enviar link de recuperação
+          </button>
+        </form>
+
+        <div class="actions">
+          <a routerLink="/auth/login" class="btn-link">Lembrou a senha? Voltar para o login</a>
+        </div>
+      </div>
+    }
+
+    <!-- Estado: Sucesso -->
+    @if (status() === 'success') {
+      <div id="success-state" class="message-state">
+        <div class="icon success">✓</div>
+        <h1>Verifique seu e-mail</h1>
+        <p>Enviamos um link de recuperação para o endereço de e-mail fornecido. Por favor, verifique sua caixa de entrada e spam.</p>
+        <a routerLink="/auth/login" class="btn btn-primary">Voltar para o Login</a>
+      </div>
+    }
+
+    <!-- Estado: Erro -->
+    @if (status() === 'error') {
+      <div id="error-state" class="message-state">
+        <div class="icon error">✗</div>
+        <h1>Ocorreu um Erro</h1>
+        <p>{{ message() }}</p>
+        <a routerLink="/auth/login" class="btn btn-primary">Voltar para o Login</a>
+      </div>
+    }
+
+  </div>
+</main>

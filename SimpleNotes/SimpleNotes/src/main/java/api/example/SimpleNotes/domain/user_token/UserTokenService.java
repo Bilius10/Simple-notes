@@ -6,10 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.time.Duration;
 import java.time.Instant;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static api.example.SimpleNotes.infrastructure.exception.ExceptionMessages.TOKEN_IS_USED;
 import static api.example.SimpleNotes.infrastructure.exception.ExceptionMessages.TOKEN_NOT_VALID;
@@ -22,24 +22,22 @@ public class UserTokenService {
     private final PasswordEncoder encoder;
 
     public void saveUserToken(User user, String token, TokenType tokenType) {
-        String tokenEnconder = encoder.encode(token);
 
-        UserToken userToken = new UserToken(user, tokenEnconder, tokenType);
+        UserToken userToken = new UserToken(user, token, tokenType);
 
         userTokenRepository.save(userToken);
     }
 
     public User validateAndUseToken(String rawToken) {
-        String tokenHash = encoder.encode(rawToken);
 
-        UserToken userToken = userTokenRepository.findByTokenHash(tokenHash)
+        UserToken userToken = userTokenRepository.findByTokenHash(rawToken)
                 .orElseThrow(() -> new ServiceException(TOKEN_NOT_VALID.getMessage(), HttpStatus.BAD_REQUEST));
 
         if (userToken.getIsUsed()) {
             throw new ServiceException(TOKEN_IS_USED.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        Duration duration = Duration.between(userToken.getCreatedAt(), Instant.now());
+        Duration duration = Duration.between(userToken.getCreatedAt(), LocalDateTime.now());
 
         if (duration.toHours() > 24) {
             throw new ServiceException(TOKEN_NOT_VALID.getMessage(), HttpStatus.BAD_REQUEST);

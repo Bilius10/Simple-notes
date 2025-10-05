@@ -1,0 +1,164 @@
+/* Usar :host para definir variáveis CSS torna o tema do componente fácil de customizar */
+:host {
+  /* Paleta de Cores */
+  --color-background: #121212; /* Um preto um pouco mais suave */
+  --color-card-background: #1e1e1e;
+  --color-primary: #e94560;
+  --color-primary-hover: #d1304a;
+  --color-text: #e0e0e0;
+  --color-text-secondary: #a0a0a0;
+  --color-input-background: #2a2a2a;
+  --color-input-border: #444;
+  --color-input-focus: var(--color-primary);
+
+  /* Padrões de UI */
+  --border-radius: 0.5rem; /* 8px */
+  --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  --transition-speed: 0.3s;
+
+  /* Configuração Base do Componente */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--color-background);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 1rem; /* Adicionado padding para evitar que o card toque as bordas em telas pequenas */
+  box-sizing: border-box;
+}
+
+.response-menssage {
+  color: white;
+}
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.login-card {
+  background-color: var(--color-card-background);
+  padding: 2.5rem; /* 40px */
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  width: 100%;
+  max-width: 25rem; /* 400px */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* Usando 'gap' para espaçar os elementos filhos (header, form, actions) */
+}
+
+.login-header {
+  text-align: center;
+}
+
+.app-logo {
+  max-width: 5rem; /* 80px */
+  height: auto;
+  margin-bottom: 1rem;
+}
+
+h1 {
+  color: var(--color-text);
+  font-size: 1.75rem; /* 28px */
+  margin: 0;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem; /* Espaçamento entre os campos e o botão */
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem; /* Espaçamento entre o label e o input */
+}
+
+label {
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  font-size: 0.875rem; /* 14px */
+}
+
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 0.75rem 1rem; /* 12px 16px */
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--border-radius);
+  background-color: var(--color-input-background);
+  color: var(--color-text);
+  font-size: 1rem; /* 16px */
+  box-sizing: border-box;
+  transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+
+input::placeholder {
+  color: #6c757d;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--color-input-focus);
+  box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.3);
+}
+
+.btn {
+  display: inline-block; /* Mudado para inline-block para funcionar com <a> também */
+  padding: 0.875rem 1.25rem; /* 14px 20px */
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color var(--transition-speed) ease, transform 0.2s ease;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+}
+
+.actions {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.btn-link {
+  background: none;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-size: 0.875rem;
+  padding: 0.25rem;
+  transition: color var(--transition-speed) ease;
+}
+
+.btn-link:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+/* A responsividade se torna mais simples. Apenas ajustamos o padding para telas pequenas. */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 2rem 1.5rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+}
