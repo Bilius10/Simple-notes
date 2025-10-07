@@ -13,4 +13,6 @@ public interface UserTokenRepository extends JpaRepository<UserToken, Long> {
     List<UserToken> findByUserAndTokenTypeAndIsUsedIsTrue(User user, TokenType tokenType);
 
     Optional<UserToken> findByTokenHash(String tokenHash);
+
+    List<UserToken> findAllByIsUsedIsFalse();
 }

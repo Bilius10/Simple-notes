@@ -11,7 +11,8 @@ public enum ExceptionMessages {
     EMAIL_IN_USE("Email já cadastrado"),
     NAME_IN_USE("Nome de usuário já cadastrado"),
     INVALID_CREDENTIALS("Credenciais inválidas"),
-    TOKEN_IS_USED("Token já utilizado");
+    TOKEN_IS_USED("Token já utilizado"),
+    EMAIL_NOT_CONFIRMED("Email não confirmado, verifique sua caixa de email");
 
     private final String message;
 

@@ -7,10 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-
 import static api.example.SimpleNotes.infrastructure.exception.ExceptionMessages.TOKEN_IS_USED;
 import static api.example.SimpleNotes.infrastructure.exception.ExceptionMessages.TOKEN_NOT_VALID;
 
@@ -18,19 +15,19 @@ import static api.example.SimpleNotes.infrastructure.exception.ExceptionMessages
 @RequiredArgsConstructor
 public class UserTokenService {
 
-    private final UserTokenRepository userTokenRepository;
+    private final UserTokenRepository repository;
     private final PasswordEncoder encoder;
 
     public void saveUserToken(User user, String token, TokenType tokenType) {
 
         UserToken userToken = new UserToken(user, token, tokenType);
 
-        userTokenRepository.save(userToken);
+        repository.save(userToken);
     }
 
     public User validateAndUseToken(String rawToken) {
 
-        UserToken userToken = userTokenRepository.findByTokenHash(rawToken)
+        UserToken userToken = repository.findByTokenHash(rawToken)
                 .orElseThrow(() -> new ServiceException(TOKEN_NOT_VALID.getMessage(), HttpStatus.BAD_REQUEST));
 
         if (userToken.getIsUsed()) {
@@ -44,8 +41,9 @@ public class UserTokenService {
         }
 
         userToken.setIsUsed(true);
-        userTokenRepository.save(userToken);
+        repository.save(userToken);
 
         return  userToken.getUser();
     }
+
 }

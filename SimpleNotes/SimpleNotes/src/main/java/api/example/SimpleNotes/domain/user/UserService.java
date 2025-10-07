@@ -2,8 +2,6 @@ package api.example.SimpleNotes.domain.user;
 
 import api.example.SimpleNotes.domain.user.dto.response.LoginResponseUser;
 import api.example.SimpleNotes.domain.user_token.TokenType;
-import api.example.SimpleNotes.domain.user_token.UserToken;
-import api.example.SimpleNotes.domain.user_token.UserTokenRepository;
 import api.example.SimpleNotes.domain.user_token.UserTokenService;
 import api.example.SimpleNotes.infrastructure.email.SpringMailSenderService;
 import api.example.SimpleNotes.infrastructure.security.TokenService;
@@ -26,10 +24,11 @@ public class UserService {
     private final TokenService tokenService;
     private final UserTokenService userTokenService;
 
+    //olhar sobre  usar Eventos Transacionais
     @Transactional
     public void register(String email, String name, String password) {
 
-        this.creteValidation(email, name);
+        this.validateRegistrationData(email, name);
 
         String passwordEncoder = encoder.encode(password);
 
@@ -37,17 +36,17 @@ public class UserService {
 
         User savedUser = repository.save(user);
 
-        String rawToken = UUID.randomUUID().toString();
-
-        userTokenService.saveUserToken(savedUser, rawToken, TokenType.EMAIL_VERIFICATION_TOKEN);
-
-        emailService.sendConfirmEmail(email, name, rawToken);
+        this.saveUserTokenAndSendEmail(savedUser);
     }
     
     public LoginResponseUser login(String email, String password) {
         User user = repository.findByEmail(email)
                 .orElseThrow(() -> new ServiceException(USER_NOT_FOUND.getMessage(), HttpStatus.NOT_FOUND));
 
+        if(!user.isAccountNonLocked()) {
+            this.saveUserTokenAndSendEmail(user);
+            throw new ServiceException(EMAIL_NOT_CONFIRMED.getMessage(), HttpStatus.FORBIDDEN);
+        }
 
         if(!encoder.matches(password, user.getPassword())) {
             throw new ServiceException(INVALID_CREDENTIALS.getMessage(), HttpStatus.UNAUTHORIZED);
@@ -90,7 +89,7 @@ public class UserService {
         repository.save(user);
     }
 
-    private void creteValidation(String email, String username) {
+    private void validateRegistrationData (String email, String username) {
         validadeIfEmailExists(email);
         validadeIfNameExists(username);
     }
@@ -106,5 +105,13 @@ public class UserService {
             throw new ServiceException(NAME_IN_USE.getMessage(), HttpStatus.CONFLICT);
 
         }
+    }
+
+    private void saveUserTokenAndSendEmail(User user) {
+        String rawToken = UUID.randomUUID().toString();
+
+        userTokenService.saveUserToken(user, rawToken, TokenType.EMAIL_VERIFICATION_TOKEN);
+
+        emailService.sendConfirmEmail(user.getEmail(), user.getName(), rawToken);
     }
 }
