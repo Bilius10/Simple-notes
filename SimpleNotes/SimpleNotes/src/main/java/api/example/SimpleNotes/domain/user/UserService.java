@@ -3,10 +3,12 @@ package api.example.SimpleNotes.domain.user;
 import api.example.SimpleNotes.domain.user.dto.response.LoginResponseUser;
 import api.example.SimpleNotes.domain.user_token.TokenType;
 import api.example.SimpleNotes.domain.user_token.UserTokenService;
-import api.example.SimpleNotes.infrastructure.email.SpringMailSenderService;
+import api.example.SimpleNotes.infrastructure.email.dto.ConfirmEmailEvent;
+import api.example.SimpleNotes.infrastructure.email.dto.ForgotPasswordEvent;
 import api.example.SimpleNotes.infrastructure.security.TokenService;
 import lombok.RequiredArgsConstructor;
 import api.example.SimpleNotes.infrastructure.exception.ServiceException;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,10 +21,10 @@ import static api.example.SimpleNotes.infrastructure.exception.ExceptionMessages
 public class UserService {
 
     private final UserRepository repository;
-    private final SpringMailSenderService emailService;
     private final PasswordEncoder encoder;
     private final TokenService tokenService;
     private final UserTokenService userTokenService;
+    private final ApplicationEventPublisher eventPublisher;
 
     //olhar sobre  usar Eventos Transacionais
     @Transactional
@@ -43,7 +45,7 @@ public class UserService {
         User user = repository.findByEmail(email)
                 .orElseThrow(() -> new ServiceException(USER_NOT_FOUND.getMessage(), HttpStatus.NOT_FOUND));
 
-        if(!user.isAccountNonLocked()) {
+        if(user.isAccountNonLocked()) {
             this.saveUserTokenAndSendEmail(user);
             throw new ServiceException(EMAIL_NOT_CONFIRMED.getMessage(), HttpStatus.FORBIDDEN);
         }
@@ -75,7 +77,7 @@ public class UserService {
 
         userTokenService.saveUserToken(user, rawToken, TokenType.EMAIL_VERIFICATION_TOKEN);
 
-        emailService.sendForgotPasswordEmail(email, user.getName(), rawToken);
+        eventPublisher.publishEvent(new ForgotPasswordEvent(user.getEmail(), rawToken, user.getName()));
     }
 
     @Transactional
@@ -112,6 +114,6 @@ public class UserService {
 
         userTokenService.saveUserToken(user, rawToken, TokenType.EMAIL_VERIFICATION_TOKEN);
 
-        emailService.sendConfirmEmail(user.getEmail(), user.getName(), rawToken);
+        eventPublisher.publishEvent(new ConfirmEmailEvent(user.getEmail(), rawToken, user.getName()));
     }
 }
