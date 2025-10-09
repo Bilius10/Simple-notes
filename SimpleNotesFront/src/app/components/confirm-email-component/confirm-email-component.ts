@@ -1,6 +1,6 @@
 import {Component, signal} from '@angular/core';
 import {Route, Router, RouterModule} from '@angular/router';
-import {AuthService} from '../service/auth-service';
+import {AuthService} from '../../service/auth-service';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({

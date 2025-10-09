@@ -2,7 +2,7 @@ import {Component, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {Router, RouterLink} from '@angular/router';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {AuthService} from '../service/auth-service';
+import {AuthService} from '../../service/auth-service';
 
 @Component({
   selector: 'app-forgot-email-component',

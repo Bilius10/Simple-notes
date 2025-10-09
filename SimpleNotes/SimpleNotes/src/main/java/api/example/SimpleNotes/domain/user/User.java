@@ -70,7 +70,7 @@ public class User implements UserDetails {
         this.name = name;
         this.password = password;
         this.userRole = UserRole.USER;
-        this.isAccountNonLocked = true;
+        this.isAccountNonLocked = false;
     }
 
     @Override

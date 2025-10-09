@@ -1,0 +1,50 @@
+<div class="main-layout-container">
+
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <img ngSrc="assets/Logo.png" alt="Logo" class="sidebar-logo" width="40" height="40">
+      <h2>SimpleNotes</h2>
+    </div>
+
+    <nav class="sidebar-nav">
+      <ul>
+        <li>
+          <a routerLink="/" routerLinkActive="active-link">
+            <i class="ph ph-grid-four"></i> <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/" routerLinkActive="active-link">
+            <i class="ph ph-user"></i> <span>Perfil</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/" routerLinkActive="active-link">
+            <i class="ph ph-gear"></i> <span>Configurações</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="#" class="logout-link">
+        <i class="ph ph-sign-out"></i>
+        <span>Sair</span>
+      </a>
+    </div>
+  </aside>
+
+  <main class="content-area">
+    <header class="content-header">
+      <h1>Bem-vindo, {{userName()}}!</h1>
+      <div class="user-profile">
+        <span>U</span>
+      </div>
+    </header>
+
+    <div class="content-body">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+
+</div>

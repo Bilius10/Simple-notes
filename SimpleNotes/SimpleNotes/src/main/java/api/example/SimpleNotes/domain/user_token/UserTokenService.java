@@ -43,7 +43,7 @@ public class UserTokenService {
         userToken.setIsUsed(true);
         repository.save(userToken);
 
-        return  userToken.getUser();
+        return userToken.getUser();
     }
 
 }

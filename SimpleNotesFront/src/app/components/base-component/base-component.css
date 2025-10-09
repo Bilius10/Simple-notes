@@ -1,0 +1,171 @@
+/* Importando a fonte e definindo variáveis */
+:host {
+  --color-background: #121212;
+  --color-card-background: #1e1e1e;
+  --color-primary: #e94560;
+  --color-text: #e0e0e0;
+  --color-text-secondary: #a0a0a0;
+  --color-border: #333;
+  --sidebar-width: 250px;
+  --header-height: 70px;
+  --transition-speed: 0.2s;
+  --font-family: 'Inter', sans-serif;
+}
+
+.main-layout-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-family);
+}
+
+/* --- Estilos da Sidebar Modernizada --- */
+.sidebar {
+  width: var(--sidebar-width);
+  background-color: var(--color-card-background);
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  border-right: 1px solid var(--color-border);
+  flex-shrink: 0;
+  box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 3rem;
+  padding: 0 0.5rem;
+}
+
+.sidebar-logo {
+  width: 35px;
+  height: auto;
+}
+
+.sidebar-header h2 {
+  font-size: 1.2rem;
+  margin: 0;
+  font-weight: 600;
+}
+
+.sidebar-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sidebar-nav a,
+.logout-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem 1rem;
+  border-radius: 0.375rem;
+  text-decoration: none;
+  color: var(--color-text-secondary); /* Cor inicial para links inativos */
+  font-weight: 500;
+  font-size: 0.95rem;
+  position: relative;
+  transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+}
+
+.sidebar-nav a i,
+.logout-link i {
+  font-size: 1.25rem;
+  transition: transform var(--transition-speed) ease;
+}
+
+.sidebar-nav a:hover,
+.logout-link:hover {
+  background-color: rgba(233, 69, 96, 0.1);
+  color: var(--color-primary); /* Cor vermelha ao passar o mouse em QUALQUER link */
+}
+
+.sidebar-nav a:hover i,
+.logout-link:hover i {
+  transform: scale(1.1);
+}
+
+/* Estilo para o link ATIVO (a página atual) */
+.sidebar-nav a.active-link {
+  /* ==================================================================== */
+  /* MUDANÇA PRINCIPAL AQUI: O link ativo agora tem a cor do texto padrão */
+  /* ==================================================================== */
+  color: var(--color-text);
+  font-weight: 600;
+  background-color: transparent;
+}
+
+/* Indicador lateral para o link ativo (continua vermelho) */
+.sidebar-nav a.active-link::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 60%;
+  background-color: var(--color-primary);
+  border-radius: 0 4px 4px 0;
+}
+
+
+/* --- Footer da Sidebar --- */
+.sidebar-footer {
+  margin-top: auto;
+}
+
+/* --- Estilos da Área de Conteúdo --- */
+.content-area {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.content-header {
+  height: var(--header-height);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2.5rem;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.content-header h1 {
+  font-size: 1.5rem;
+  margin: 0;
+  font-weight: 600;
+}
+
+.user-profile {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  cursor: pointer;
+  border: 2px solid var(--color-card-background);
+  transition: transform var(--transition-speed) ease;
+}
+
+.user-profile:hover {
+  transform: scale(1.1);
+}
+
+.content-body {
+  padding: 2.5rem;
+  flex-grow: 1;
+}

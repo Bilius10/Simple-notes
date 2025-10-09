@@ -47,7 +47,6 @@ public class UserService {
 
         if(user.isAccountNonLocked()) {
             this.saveUserTokenAndSendEmail(user);
-            throw new ServiceException(EMAIL_NOT_CONFIRMED.getMessage(), HttpStatus.FORBIDDEN);
         }
 
         if(!encoder.matches(password, user.getPassword())) {
@@ -63,7 +62,7 @@ public class UserService {
     public void confirmEmail(String token) {
         User user = userTokenService.validateAndUseToken(token);
 
-        user.setAccountNonLocked(false);
+        user.setAccountNonLocked(true);
 
         repository.save(user);
     }
