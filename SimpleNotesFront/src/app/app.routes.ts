@@ -6,6 +6,7 @@ import { ForgotEmailComponent } from './components/forgot-email-component/forgot
 import { ResetPasswordComponent } from './components/reset-password-component/reset-password-component';
 import { MenuComponent } from './components/menu-component/menu-component';
 import {BaseComponent} from './components/base-component/base-component';
+import {ProfileCardComponent} from './components/profile-card-component/profile-card-component';
 
 
 export const routes: Routes = [
@@ -23,6 +24,7 @@ export const routes: Routes = [
     component: BaseComponent,
     children: [
       { path: 'menu', component: MenuComponent },
+      { path: 'profile-card', component: ProfileCardComponent}
     ]
   },
 

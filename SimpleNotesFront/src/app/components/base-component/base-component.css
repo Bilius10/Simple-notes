@@ -18,6 +18,8 @@
   background-color: var(--color-background);
   color: var(--color-text);
   font-family: var(--font-family);
+  position: relative;
+  overflow-x: hidden;
 }
 
 /* --- Estilos da Sidebar Modernizada --- */
@@ -30,7 +32,8 @@
   border-right: 1px solid var(--color-border);
   flex-shrink: 0;
   box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
-  z-index: 10;
+  z-index: 1000;
+  transition: transform 0.3s ease-in-out;
 }
 
 .sidebar-header {
@@ -69,7 +72,7 @@
   padding: 0.8rem 1rem;
   border-radius: 0.375rem;
   text-decoration: none;
-  color: var(--color-text-secondary); /* Cor inicial para links inativos */
+  color: var(--color-text-secondary);
   font-weight: 500;
   font-size: 0.95rem;
   position: relative;
@@ -85,7 +88,7 @@
 .sidebar-nav a:hover,
 .logout-link:hover {
   background-color: rgba(233, 69, 96, 0.1);
-  color: var(--color-primary); /* Cor vermelha ao passar o mouse em QUALQUER link */
+  color: var(--color-primary);
 }
 
 .sidebar-nav a:hover i,
@@ -93,17 +96,12 @@
   transform: scale(1.1);
 }
 
-/* Estilo para o link ATIVO (a página atual) */
 .sidebar-nav a.active-link {
-  /* ==================================================================== */
-  /* MUDANÇA PRINCIPAL AQUI: O link ativo agora tem a cor do texto padrão */
-  /* ==================================================================== */
   color: var(--color-text);
   font-weight: 600;
   background-color: transparent;
 }
 
-/* Indicador lateral para o link ativo (continua vermelho) */
 .sidebar-nav a.active-link::before {
   content: '';
   position: absolute;
@@ -116,8 +114,6 @@
   border-radius: 0 4px 4px 0;
 }
 
-
-/* --- Footer da Sidebar --- */
 .sidebar-footer {
   margin-top: auto;
 }
@@ -128,6 +124,7 @@
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  width: 100%;
 }
 
 .content-header {
@@ -138,6 +135,7 @@
   padding: 0 2.5rem;
   border-bottom: 1px solid var(--color-border);
   flex-shrink: 0;
+  position: relative; /* Para posicionamento do menu-toggle */
 }
 
 .content-header h1 {
@@ -168,4 +166,67 @@
 .content-body {
   padding: 2.5rem;
   flex-grow: 1;
+}
+
+/* --- Regras de Responsividade do Layout Principal --- */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--color-text);
+  font-size: 1.8rem;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+.overlay.is-visible {
+  display: block;
+}
+
+@media (max-width: 992px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    transform: translateX(-100%);
+  }
+
+  .sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  .content-header {
+    padding: 0 1.5rem;
+  }
+
+  .content-header h1 {
+    font-size: 1.2rem;
+    margin: 0 auto;
+  }
+
+  .menu-toggle {
+    display: block;
+    position: absolute;
+    left: 1.5rem;
+  }
+
+  .user-profile {
+    margin-left: 0;
+  }
+
+  .content-body {
+    padding: 1.5rem;
+  }
 }

@@ -1,0 +1,28 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<div class="profile-card">
+
+  <div class="profile-header">
+    <div class="profile-avatar">
+      <span>{{ userName().charAt(0).toUpperCase() }}</span>
+    </div>
+    <h2>{{ userName }}</h2>
+    <p class="profile-email">{{ email }}</p>
+  </div>
+
+  <div class="profile-actions">
+    <button class="profile-action-btn">
+      <i class="fa-solid fa-user-pen"></i>
+      <span>Editar Perfil</span>
+    </button>
+    <button class="profile-action-btn">
+      <i class="fa-solid fa-bell"></i>
+      <span>Notificações</span>
+    </button>
+    <button class="profile-action-btn">
+      <i class="fa-solid fa-user-plus"></i>
+      <span>Adicionar Amigo</span>
+    </button>
+  </div>
+
+</div>

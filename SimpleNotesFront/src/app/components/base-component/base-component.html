@@ -5,7 +5,6 @@
       <img ngSrc="assets/Logo.png" alt="Logo" class="sidebar-logo" width="40" height="40">
       <h2>SimpleNotes</h2>
     </div>
-
     <nav class="sidebar-nav">
       <ul>
         <li>
@@ -13,19 +12,8 @@
             <i class="ph ph-grid-four"></i> <span>Dashboard</span>
           </a>
         </li>
-        <li>
-          <a routerLink="/" routerLinkActive="active-link">
-            <i class="ph ph-user"></i> <span>Perfil</span>
-          </a>
-        </li>
-        <li>
-          <a routerLink="/" routerLinkActive="active-link">
-            <i class="ph ph-gear"></i> <span>Configurações</span>
-          </a>
-        </li>
       </ul>
     </nav>
-
     <div class="sidebar-footer">
       <a href="#" class="logout-link">
         <i class="ph ph-sign-out"></i>
@@ -34,14 +22,18 @@
     </div>
   </aside>
 
+  <div class="overlay" (click)="closeSidebar()"></div>
+
   <main class="content-area">
     <header class="content-header">
+      <button class="menu-toggle" (click)="toggleSidebar()">
+        <i class="ph ph-list">=</i>
+      </button>
       <h1>Bem-vindo, {{userName()}}!</h1>
-      <div class="user-profile">
-        <span>U</span>
+      <div class="user-profile" routerLink="/profile-card">
+        <span>{{ userName().charAt(0).toUpperCase() }}</span>
       </div>
     </header>
-
     <div class="content-body">
       <router-outlet></router-outlet>
     </div>
