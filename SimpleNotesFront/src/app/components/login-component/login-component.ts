@@ -1,5 +1,5 @@
-import {Component, signal} from '@angular/core';
-import {CommonModule, NgOptimizedImage} from '@angular/common';
+import {Component, Inject, PLATFORM_ID, signal} from '@angular/core';
+import {CommonModule, isPlatformBrowser, NgOptimizedImage} from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {Router, RouterModule} from '@angular/router';
 import {AuthService} from '../../service/auth-service';
@@ -15,7 +15,11 @@ export class LoginComponent {
   password: string = '';
   responseMessage = signal<string>('');
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
   onSubmit(): void {
     const loginData = {
@@ -25,13 +29,17 @@ export class LoginComponent {
 
     this.authService.login(loginData).subscribe({
       next: (response: any) => {
-        console.log('Login bem-sucedido:', response);
-        this.responseMessage.set("Login bem-sucedido!");
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('id', response.userId);
-        localStorage.setItem('userName', response.userName);
-        localStorage.setItem('email', response.email);
-        this.router.navigate(['/']);
+        if (isPlatformBrowser(this.platformId)) {
+          console.log('Login bem-sucedido:', response);
+          this.responseMessage.set("Login bem-sucedido!");
+
+          sessionStorage.setItem('token', response.token);
+          sessionStorage.setItem('id', response.userId);
+          sessionStorage.setItem('name', response.name);
+          sessionStorage.setItem('email', response.email);
+
+          this.router.navigate(['/menu']);
+        }
       },
       error: (error) => {
         console.error('Erro no login:', error);
@@ -45,5 +53,4 @@ export class LoginComponent {
       this.password = '';
     }, 2000);
   }
-
 }

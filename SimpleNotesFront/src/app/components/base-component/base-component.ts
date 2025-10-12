@@ -1,6 +1,6 @@
-import {Component, ElementRef, Renderer2, signal} from '@angular/core';
+import {Component, ElementRef, Inject, PLATFORM_ID, Renderer2, signal} from '@angular/core';
 import {Router, RouterModule} from '@angular/router';
-import {CommonModule, NgOptimizedImage} from '@angular/common';
+import {CommonModule, isPlatformBrowser, NgOptimizedImage} from '@angular/common';
 
 @Component({
   selector: 'app-base-component',
@@ -12,10 +12,15 @@ export class BaseComponent {
 
   userName = signal<string>('Usuário');
 
-  constructor(private router: Router, private renderer: Renderer2, private el: ElementRef) {}
+  constructor(private router: Router,
+              private renderer: Renderer2,
+              private el: ElementRef,
+              @Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit(): void {
-    this.userName.set(localStorage.getItem('userName') || 'Usuário');
+    if (isPlatformBrowser(this.platformId)) {
+      this.userName.set(sessionStorage.getItem('name') || 'Usuário');
+    }
   }
 
   toggleSidebar() {

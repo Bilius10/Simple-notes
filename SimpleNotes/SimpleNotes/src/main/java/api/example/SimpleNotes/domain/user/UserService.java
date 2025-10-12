@@ -1,14 +1,18 @@
 package api.example.SimpleNotes.domain.user;
 
 import api.example.SimpleNotes.domain.user.dto.response.LoginResponseUser;
+import api.example.SimpleNotes.domain.user.dto.response.UserResponse;
 import api.example.SimpleNotes.domain.user_token.TokenType;
 import api.example.SimpleNotes.domain.user_token.UserTokenService;
+import api.example.SimpleNotes.infrastructure.dto.PageDTO;
 import api.example.SimpleNotes.infrastructure.email.dto.ConfirmEmailEvent;
 import api.example.SimpleNotes.infrastructure.email.dto.ForgotPasswordEvent;
 import api.example.SimpleNotes.infrastructure.security.TokenService;
 import lombok.RequiredArgsConstructor;
 import api.example.SimpleNotes.infrastructure.exception.ServiceException;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,7 +30,6 @@ public class UserService {
     private final UserTokenService userTokenService;
     private final ApplicationEventPublisher eventPublisher;
 
-    //olhar sobre  usar Eventos Transacionais
     @Transactional
     public void register(String email, String name, String password) {
 
@@ -88,6 +91,20 @@ public class UserService {
         user.setPassword(passwordEncoder);
 
         repository.save(user);
+    }
+
+    @Transactional(readOnly = true)
+    public PageDTO<UserResponse> findAll(Pageable pageable) {
+        Page<User> users = repository.findAllByIsAccountNonLockedIsTrue(pageable);
+
+        Page<UserResponse> dtosPage = users.map(UserResponse::new);
+
+        return new PageDTO<>(
+                dtosPage.getContent(),
+                users.getNumber(),
+                users.getSize(),
+                users.getTotalElements(),
+                users.getTotalPages());
     }
 
     private void validateRegistrationData (String email, String username) {

@@ -1,0 +1,44 @@
+<main class="user-search-container">
+
+  <div class="user-search-card">
+    <header class="search-header">
+      <h1>Encontrar Usuários</h1>
+      <p>Busque e conecte-se com outros membros da plataforma.</p>
+    </header>
+
+    <div class="search-box">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input
+        type="text"
+        placeholder="Digite o nome para filtrar..."
+        (input)="onSearch($event)">
+    </div>
+
+    <div class="user-list">
+      <div *ngIf="isLoading()" class="loading-spinner"></div>
+
+      <div *ngIf="!isLoading() && filteredUsers().length === 0" class="no-results">
+        <p>Nenhum usuário encontrado.</p>
+      </div>
+
+      <div *ngFor="let user of filteredUsers()" class="user-item">
+        <div class="user-avatar">{{ user.name.substring(0, 2).toUpperCase() }}</div>
+        <div class="user-details">
+          <span class="user-name">{{ user.name }}</span>
+          <span class="user-email">{{ user.email }}</span>
+        </div>
+        <button (click)="addFriend(user.id)" class="add-friend-btn" title="Adicionar Amigo">
+          <i class="fa-solid fa-user-plus"></i>
+        </button>
+      </div>
+    </div>
+
+    <button
+      *ngIf="!isLastPage() && !isLoading()"
+      (click)="loadMore()"
+      class="btn btn-primary">
+      Carregar Mais
+    </button>
+  </div>
+
+</main>

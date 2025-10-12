@@ -6,8 +6,8 @@
     <div class="profile-avatar">
       <span>{{ userName().charAt(0).toUpperCase() }}</span>
     </div>
-    <h2>{{ userName }}</h2>
-    <p class="profile-email">{{ email }}</p>
+    <h2>{{ userName() }}</h2>
+    <p class="profile-email">{{ email() }}</p>
   </div>
 
   <div class="profile-actions">
@@ -19,7 +19,7 @@
       <i class="fa-solid fa-bell"></i>
       <span>Notificações</span>
     </button>
-    <button class="profile-action-btn">
+    <button class="profile-action-btn" routerLink="/list-users">
       <i class="fa-solid fa-user-plus"></i>
       <span>Adicionar Amigo</span>
     </button>
