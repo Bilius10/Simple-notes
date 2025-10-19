@@ -34,7 +34,7 @@ export class LoginComponent {
           this.responseMessage.set("Login bem-sucedido!");
 
           sessionStorage.setItem('token', response.token);
-          sessionStorage.setItem('id', response.userId);
+          sessionStorage.setItem('id', response.id);
           sessionStorage.setItem('name', response.name);
           sessionStorage.setItem('email', response.email);
 

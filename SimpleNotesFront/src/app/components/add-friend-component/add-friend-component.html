@@ -33,12 +33,10 @@
       </div>
     </div>
 
-    <button
-      *ngIf="!isLastPage() && !isLoading()"
-      (click)="loadMore()"
-      class="btn btn-primary">
-      Carregar Mais
-    </button>
+    <div class="form-actions">
+      <button type="button" routerLink="/profile-card" class="btn btn-secondary">Voltar</button>
+      <button type="submit" class="btn btn-primary">Carregar mais...</button>
+    </div>
   </div>
 
 </main>

@@ -14,7 +14,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 
     Page<User> findAllByIsAccountNonLockedIsTrue(Pageable pageable);
+
+    Optional<User> findByIdAndCreatedByAndIsAccountNonLockedIsTrue(Long id, String createdBy);
+
     boolean existsByEmail(String email);
+
     boolean existsByName(String username);
 
 }

@@ -1,5 +1,6 @@
 package api.example.SimpleNotes.domain.user;
 
+import api.example.SimpleNotes.domain.user.dto.request.UserRequest;
 import api.example.SimpleNotes.domain.user.dto.response.LoginResponseUser;
 import api.example.SimpleNotes.domain.user.dto.response.UserResponse;
 import api.example.SimpleNotes.domain.user_token.TokenType;
@@ -7,6 +8,7 @@ import api.example.SimpleNotes.domain.user_token.UserTokenService;
 import api.example.SimpleNotes.infrastructure.dto.PageDTO;
 import api.example.SimpleNotes.infrastructure.email.dto.ConfirmEmailEvent;
 import api.example.SimpleNotes.infrastructure.email.dto.ForgotPasswordEvent;
+import api.example.SimpleNotes.infrastructure.security.AuditorAwareImpl;
 import api.example.SimpleNotes.infrastructure.security.TokenService;
 import lombok.RequiredArgsConstructor;
 import api.example.SimpleNotes.infrastructure.exception.ServiceException;
@@ -17,6 +19,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 import java.util.UUID;
 import static api.example.SimpleNotes.infrastructure.exception.ExceptionMessages.*;
 
@@ -29,6 +33,7 @@ public class UserService {
     private final TokenService tokenService;
     private final UserTokenService userTokenService;
     private final ApplicationEventPublisher eventPublisher;
+    private final AuditorAwareImpl auditorAware;
 
     @Transactional
     public void register(String email, String name, String password) {
@@ -66,6 +71,7 @@ public class UserService {
         User user = userTokenService.validateAndUseToken(token);
 
         user.setAccountNonLocked(true);
+        user.setCreatedBy(user.getEmail());
 
         repository.save(user);
     }
@@ -105,6 +111,33 @@ public class UserService {
                 users.getSize(),
                 users.getTotalElements(),
                 users.getTotalPages());
+    }
+
+    @Transactional(readOnly = true)
+    public User findById(Long id) {
+        Optional<String> currentAuditor = auditorAware.getCurrentAuditor();
+
+        return repository.findByIdAndCreatedByAndIsAccountNonLockedIsTrue(id, currentAuditor.get())
+                .orElseThrow(() -> new ServiceException(USER_NOT_FOUND.getMessage(), HttpStatus.NOT_FOUND));
+    }
+
+    @Transactional
+    public User update(Long id, UserRequest userRequest) {
+        User user = this.findById(id);
+
+        if (!user.getEmail().equals(userRequest.email())) {
+            validadeIfEmailExists(userRequest.email());
+            user.setEmail(userRequest.email());
+            user.setAccountNonLocked(false);
+            this.saveUserTokenAndSendEmail(user);
+        }
+
+        if (!user.getName().equals(userRequest.name())) {
+            validadeIfNameExists(userRequest.name());
+            user.setName(userRequest.name());
+        }
+
+        return user;
     }
 
     private void validateRegistrationData (String email, String username) {

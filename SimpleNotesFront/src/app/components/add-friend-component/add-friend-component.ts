@@ -1,10 +1,12 @@
 import { Component, signal, WritableSignal, computed, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {User, UserService} from '../../service/user-service';
+import {RouterLink} from '@angular/router';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-add-friend-component',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './add-friend-component.html',
   styleUrl: './add-friend-component.css'
 })

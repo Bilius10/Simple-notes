@@ -1,4 +1,4 @@
-package api.example.SimpleNotes.infrastructure;
+package api.example.SimpleNotes.infrastructure.security;
 
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;

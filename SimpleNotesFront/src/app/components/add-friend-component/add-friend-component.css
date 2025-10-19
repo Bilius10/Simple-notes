@@ -12,16 +12,20 @@
   --color-input-focus: var(--color-primary);
   --color-success: #4CAF50;
 
+
   /* Padrões de UI */
   --border-radius: 0.5rem;
   --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
   --transition-speed: 0.3s;
 
-  display: flex;
-  justify-content: center;
+  /* * ===================================
+   * === ALTERAÇÃO AQUI ===
+   * Removido 'display: flex', 'justify-content' e 'min-height: 100vh'.
+   * ===================================
+   */
+  display: block;
   padding: 2rem 1rem;
   background-color: var(--color-background);
-  min-height: 100vh;
   box-sizing: border-box;
 }
 
@@ -36,6 +40,13 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+
+  /* * ===================================
+   * === ALTERAÇÃO AQUI ===
+   * Adicionada a margem padrão para seguir o padrão do primeiro card.
+   * ===================================
+   */
+  margin: 4rem auto;
 }
 
 .search-header {
@@ -183,6 +194,16 @@
   transform: translateY(-2px);
 }
 
+.btn-secondary {
+  background-color: var(--color-secondary-background);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-input-border);
+}
+
+.btn-secondary:hover {
+  color: var(--color-text);
+}
+
 /* Spinner e mensagem de 'sem resultados' */
 .loading-spinner {
   width: 40px;
@@ -204,6 +225,14 @@
   color: var(--color-text-secondary);
 }
 
+/* Container para alinhar os botões */
+.form-actions {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: flex-end; /* Alinha botões à direita */
+  gap: 1rem;
+}
+
 /* =================================== */
 /* === AJUSTES PARA RESPONSIVIDADE === */
 /* =================================== */
@@ -214,6 +243,14 @@
 
   .user-search-card {
     padding: 1.5rem; /* Menos padding no card */
+
+    /* * ===================================
+     * === ALTERAÇÃO AQUI ===
+     * Adicionado ajuste de margem para telas menores.
+     * ===================================
+     */
+    margin-top: 2rem;
+    margin-bottom: 2rem;
   }
 
   .search-header h1 {
@@ -236,6 +273,8 @@
     height: 40px;
     font-size: 1.1rem;
   }
+
+  .form-actions {
+    flex-direction: column-reverse; /* Empilha os botões em telas pequenas */
+  }
 }
-
-

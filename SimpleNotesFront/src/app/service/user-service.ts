@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable, WritableSignal} from '@angular/core';
 import {environment} from '../../environments/environment';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
@@ -33,5 +33,13 @@ export class UserService {
     };
 
     return this.http.get<PageDTO<User>>(`${this.apiUrl}/user`, { params });
+  }
+
+  getUserById(id: string | null): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/user/${id}`);
+  }
+
+  updateUser(id: string | null, userData: { name: string; email: string }): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/user/${id}`, userData);
   }
 }

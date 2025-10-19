@@ -11,8 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableAsync
 @EnableScheduling
 public class SimpleNotesApplication {
-    //.\mvnw.cmd clean package -DskipTests
-    //docker-compose up --build -d
+    //entender por qual motivo que quando tento fazer login pelo front, ele não funciona
 	public static void main(String[] args) {
 		SpringApplication.run(SimpleNotesApplication.class, args);
 	}
