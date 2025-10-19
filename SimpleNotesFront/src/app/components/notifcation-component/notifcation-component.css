@@ -1,0 +1,278 @@
+/* Usando :host para herdar as variáveis do seu tema */
+:host {
+  /* Paleta de Cores (idêntica à sua) */
+  --color-background: #121212;
+  --color-card-background: #1e1e1e;
+  --color-primary: #e94560;
+  --color-primary-hover: #d1304a;
+  --color-text: #e0e0e0;
+  --color-text-secondary: #a0a0a0;
+  --color-input-background: #2a2a2a;
+  --color-input-border: #444;
+  --color-input-focus: var(--color-primary);
+  --color-success: #4CAF50; /* Cor do seu botão 'add-friend' */
+
+  /* Padrões de UI (idênticos ao seu) */
+  --border-radius: 0.5rem;
+  --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  --transition-speed: 0.3s;
+
+  /* Layout principal da página */
+  display: block;
+  padding: 2rem 1rem;
+  background-color: var(--color-background);
+  box-sizing: border-box;
+}
+
+/* Card principal (baseado no seu .user-search-card) */
+.notification-card {
+  background-color: var(--color-card-background);
+  padding: 2.5rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  width: 100%;
+  max-width: 44rem; /* 700px */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin: 4rem auto;
+}
+
+/* Cabeçalho */
+.notification-header {
+  text-align: center;
+}
+
+.notification-header h1 {
+  color: var(--color-text);
+  font-size: 1.75rem;
+  margin: 0 0 0.5rem 0;
+}
+
+.notification-header p {
+  color: var(--color-text-secondary);
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Destaque para o contador de não lidas */
+.unread-count {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* Lista de notificações (baseado no .user-list) */
+.notification-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; /* Espaçamento entre os itens */
+  max-height: 500px; /* Altura máxima opcional */
+  overflow-y: auto; /* Adiciona scroll se a lista for longa */
+  padding-right: 5px; /* Espaço para o scrollbar */
+}
+
+/* Item individual da notificação (baseado no .user-item) */
+.notification-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: var(--color-input-background);
+  border-radius: var(--border-radius);
+  transition: all var(--transition-speed) ease;
+  border-left: 4px solid var(--color-primary); /* Destaque para não lida */
+}
+
+/* Ícone da notificação (baseado no .user-avatar) */
+.notification-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: var(--color-primary-hover); /* Um pouco mais escuro */
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  transition: all var(--transition-speed) ease;
+}
+
+.notification-details {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.notification-text {
+  font-weight: 500;
+  color: var(--color-text);
+  overflow-wrap: break-word;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.notification-date {
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+/*
+ * ======================================================
+ * === REGRAS PARA NOTIFICAÇÕES LIDAS (O seu pedido) ===
+ * ======================================================
+ */
+
+/* 1. Deixa o item inteiro "cinza" (mais opaco) */
+.notification-item.is-read {
+  opacity: 0.6;
+  border-left-color: var(--color-input-border); /* Tira o destaque */
+}
+
+/* 2. Muda a cor do ícone para cinza */
+.notification-item.is-read .notification-icon {
+  background-color: var(--color-input-border);
+  color: var(--color-text-secondary);
+}
+
+/* 3. Esconde o botão "Marcar como lida" */
+.notification-item.is-read .mark-as-read-btn {
+  display: none;
+}
+
+/* Botão de Marcar como Lida (baseado no .add-friend-btn) */
+.mark-as-read-btn {
+  background: transparent;
+  border: 2px solid var(--color-input-border);
+  color: var(--color-text-secondary);
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-speed) ease;
+  flex-shrink: 0;
+}
+
+.mark-as-read-btn:hover {
+  background-color: var(--color-success); /* Verde (do seu tema) */
+  border-color: var(--color-success);
+  color: white;
+  transform: scale(1.1);
+}
+
+
+/* =================================== */
+/* === BOTÕES E ESTADOS DE TELA === */
+/* =================================== */
+
+/* Botões (copiado do seu CSS) */
+.form-actions {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: flex-end; /* Alinha botões à direita */
+  gap: 1rem;
+}
+
+.btn {
+  padding: 0.875rem 1.25rem;
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color var(--transition-speed) ease, transform 0.2s ease;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  /* Corrigido: use uma variável que exista */
+  background-color: var(--color-input-background);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-input-border);
+}
+
+.btn-secondary:hover {
+  color: var(--color-text);
+  border-color: var(--color-text-secondary);
+}
+
+/* Spinner e 'sem resultados' (copiado do seu CSS) */
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  margin: 2rem auto;
+  border: 4px solid var(--color-input-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.no-results {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-text-secondary);
+}
+
+/* =================================== */
+/* === RESPONSIVIDADE (do seu CSS) === */
+/* =================================== */
+@media (max-width: 600px) {
+  :host {
+    padding: 1rem;
+  }
+
+  .notification-card {
+    padding: 1.5rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .notification-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .notification-item {
+    padding: 0.75rem;
+    gap: 0.75rem;
+  }
+
+  .notification-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  .notification-text {
+    font-size: 0.9rem;
+  }
+
+  .mark-as-read-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse; /* Empilha botões */
+  }
+}

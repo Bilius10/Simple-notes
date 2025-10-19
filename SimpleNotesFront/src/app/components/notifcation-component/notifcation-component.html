@@ -1,0 +1,55 @@
+<main class="notification-container">
+  <div class="notification-card">
+
+    <header class="notification-header">
+      <h1>Notificações</h1>
+      <p>
+        Você tem <span class="unread-count">{{ unreadCount() }}</span>
+        notificação{{ unreadCount() !== 1 ? 's' : '' }} não lida{{ unreadCount() !== 1 ? 's' : '' }}.
+      </p>
+    </header>
+
+    <div class="notification-list">
+
+      <div *ngIf="isLoading()" class="loading-spinner"></div>
+      <div *ngIf="!isLoading() && notifications().length === 0" class="no-results">
+        <p>Nenhuma notificação por aqui.</p>
+      </div>
+
+      <div
+        *ngFor="let notification of notifications()"
+        class="notification-item"
+        [class.is-read]="notification.isRead">
+
+        <div class="notification-icon">
+          <i class="fa-solid fa-bell"></i>
+        </div>
+
+        <div class="notification-details">
+          <span class="notification-text">{{ notification.message }}</span>
+          <span class="notification-date">{{ notification.createdAt }}</span>
+        </div>
+
+        <button
+          *ngIf="!notification.isRead"
+          (click)="markAsRead(notification.id)"
+          class="mark-as-read-btn"
+          title="Marcar como lida">
+          <i class="fa-solid fa-check"></i>
+        </button>
+      </div>
+
+    </div>
+
+    <div class="form-actions">
+      <button type="button" routerLink="/profile-card" class="btn btn-secondary">Voltar</button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="markAllAsRead()"
+        [disabled]="unreadCount() === 0"> Marcar todas como lidas
+      </button>
+    </div>
+
+  </div>
+</main>

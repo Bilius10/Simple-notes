@@ -9,6 +9,7 @@ import {BaseComponent} from './components/base-component/base-component';
 import {ProfileCardComponent} from './components/profile-card-component/profile-card-component';
 import {AddFriendComponent} from './components/add-friend-component/add-friend-component';
 import {EditProfileComponent} from './components/edit-profile-component/edit-profile-component';
+import {NotifcationComponent} from './components/notifcation-component/notifcation-component';
 
 
 export const routes: Routes = [
@@ -28,7 +29,8 @@ export const routes: Routes = [
       { path: 'menu', component: MenuComponent },
       { path: 'profile-card', component: ProfileCardComponent},
       { path: 'list-users', component: AddFriendComponent},
-      { path: 'edit-profile', component: EditProfileComponent}
+      { path: 'edit-profile', component: EditProfileComponent},
+      { path: 'notifications', component: NotifcationComponent}
     ]
   },
 

@@ -1,5 +1,6 @@
 package api.example.SimpleNotes.domain.user;
 
+import api.example.SimpleNotes.domain.notification.Notification;
 import api.example.SimpleNotes.domain.user_token.UserToken;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -12,7 +13,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -43,11 +43,11 @@ public class User implements UserDetails {
     private UserRole userRole;
 
     @CreatedBy
-    @Column(name = "created_by", updatable = false)
+    @Column(name = "created_by")
     private String createdBy;
 
     @CreatedDate
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @LastModifiedBy
@@ -64,6 +64,10 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<UserToken> tokens;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Notification> notifications;
 
     public User(String email, String name, String password) {
         this.email = email;

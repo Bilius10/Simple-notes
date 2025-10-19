@@ -1,5 +1,6 @@
 package api.example.SimpleNotes.domain.user;
 
+import api.example.SimpleNotes.domain.notification.NotificationService;
 import api.example.SimpleNotes.domain.user.dto.request.UserRequest;
 import api.example.SimpleNotes.domain.user.dto.response.LoginResponseUser;
 import api.example.SimpleNotes.domain.user.dto.response.UserResponse;
@@ -34,6 +35,7 @@ public class UserService {
     private final UserTokenService userTokenService;
     private final ApplicationEventPublisher eventPublisher;
     private final AuditorAwareImpl auditorAware;
+    private final NotificationService notificationService;
 
     @Transactional
     public void register(String email, String name, String password) {
@@ -53,7 +55,7 @@ public class UserService {
         User user = repository.findByEmail(email)
                 .orElseThrow(() -> new ServiceException(USER_NOT_FOUND.getMessage(), HttpStatus.NOT_FOUND));
 
-        if(user.isAccountNonLocked()) {
+        if(!user.isAccountNonLocked()) {
             this.saveUserTokenAndSendEmail(user);
         }
 
@@ -73,6 +75,7 @@ public class UserService {
         user.setAccountNonLocked(true);
         user.setCreatedBy(user.getEmail());
 
+        notificationService.save(user,"Email confirmado com sucesso.");
         repository.save(user);
     }
 
@@ -95,6 +98,8 @@ public class UserService {
         String passwordEncoder = encoder.encode(newPassword);
 
         user.setPassword(passwordEncoder);
+
+        notificationService.save(user,"Senha alterada com sucesso");
 
         repository.save(user);
     }
@@ -137,7 +142,15 @@ public class UserService {
             user.setName(userRequest.name());
         }
 
+        notificationService.save(user,"Dados atualizados com sucesso");
         return user;
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        User userEntity = this.findById(id);
+
+        repository.delete(userEntity);
     }
 
     private void validateRegistrationData (String email, String username) {
