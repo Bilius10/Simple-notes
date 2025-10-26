@@ -15,7 +15,9 @@ public enum ExceptionMessages {
     EMAIL_NOT_CONFIRMED("Email não confirmado, verifique sua caixa de email"),
     NOTIFICATION_NOT_FOUND("Notificação não encontrada"),
     FRIEND_REQUEST_ALREADY_PENDING("Você já possui um pedido de amizade pendente para este usuário."),
-    CANNOT_SEND_REQUEST_TO_YOURSELF("Você não pode enviar um pedido para si mesmo.");
+    CANNOT_SEND_REQUEST_TO_YOURSELF("Você não pode enviar um pedido para si mesmo."),
+    FRIEND_REQUEST_NOT_FOUND("Solicitação de amizade não encontrada"),
+    FRIEND_REQUEST_ALREADY_ANSWERED("Solicitação de amizade já respondida");
 
 
     private final String message;

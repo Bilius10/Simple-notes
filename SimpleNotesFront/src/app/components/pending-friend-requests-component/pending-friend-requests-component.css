@@ -1,0 +1,303 @@
+/* Usando :host para definir o escopo e herdar as variáveis do seu tema */
+:host {
+  /* Paleta de Cores (idêntica à sua tela de login para consistência) */
+  --color-background: #121212;
+  --color-card-background: #1e1e1e;
+  --color-primary: #e94560;
+  --color-primary-hover: #d1304a;
+  --color-text: #e0e0e0;
+  --color-text-secondary: #a0a0a0;
+  --color-input-background: #2a2a2a;
+  --color-input-border: #444;
+  --color-input-focus: var(--color-primary);
+  --color-success: #4CAF50;
+
+
+  /* Padrões de UI */
+  --border-radius: 0.5rem;
+  --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  --transition-speed: 0.3s;
+
+  /* * ===================================
+   * === ALTERAÇÃO AQUI ===
+   * Removido 'display: flex', 'justify-content' e 'min-height: 100vh'.
+   * ===================================
+   */
+  display: block;
+  padding: 2rem 1rem;
+  background-color: var(--color-background);
+  box-sizing: border-box;
+}
+
+/* Card principal */
+.user-search-card {
+  background-color: var(--color-card-background);
+  padding: 2.5rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  width: 100%;
+  max-width: 44rem; /* 700px */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  /* * ===================================
+   * === ALTERAÇÃO AQUI ===
+   * Adicionada a margem padrão para seguir o padrão do primeiro card.
+   * ===================================
+   */
+  margin: 4rem auto;
+}
+
+.search-header {
+  text-align: center;
+}
+
+.search-header h1 {
+  color: var(--color-text);
+  font-size: 1.75rem;
+  margin: 0 0 0.5rem 0;
+}
+
+.search-header p {
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* Caixa de busca */
+.search-box {
+  position: relative;
+}
+
+.search-box i {
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  transform: translateY(-50%);
+  color: var(--color-text-secondary);
+}
+
+.search-box input {
+  width: 100%;
+  padding: 0.8rem 1rem 0.8rem 3rem;
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--border-radius);
+  background-color: var(--color-input-background);
+  color: var(--color-text);
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: all var(--transition-speed) ease;
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: var(--color-input-focus);
+  box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.3);
+}
+
+/* Lista de usuários */
+.user-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; /* Espaçamento entre os itens */
+}
+
+.user-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: var(--color-input-background);
+  border-radius: var(--border-radius);
+  transition: background-color var(--transition-speed);
+}
+
+.user-item:hover {
+  background-color: #333;
+}
+
+.user-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.user-details {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Crucial para o text-overflow funcionar */
+  min-width: 0; /* ADICIONADO: Corrige um bug do flexbox que impede o encolhimento do texto */
+}
+
+.user-details .user-name {
+  font-weight: 600;
+  color: var(--color-text);
+  overflow-wrap: break-word;
+}
+
+.user-details .user-email {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  overflow-wrap: break-word;
+}
+
+.add-friend-btn {
+  background: transparent;
+  border: 2px solid var(--color-input-border);
+  color: var(--color-text-secondary);
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-speed) ease;
+  flex-shrink: 0;
+}
+
+.add-friend-btn:hover {
+  background-color: var(--color-success);
+  border-color: var(--color-success);
+  color: white;
+  transform: scale(1.1);
+}
+
+.reject-btn {
+  background: transparent;
+  border: 2px solid var(--color-input-border);
+  color: var(--color-primary);
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-speed) ease;
+  flex-shrink: 0;
+}
+
+.reject-btn:hover {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+  transform: scale(1.1);
+}
+
+/* Botão principal (Carregar mais) */
+.btn {
+  padding: 0.875rem 1.25rem;
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color var(--transition-speed) ease, transform 0.2s ease;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background-color: var(--color-secondary-background);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-input-border);
+}
+
+.btn-secondary:hover {
+  color: var(--color-text);
+}
+
+/* Spinner e mensagem de 'sem resultados' */
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  margin: 2rem auto;
+  border: 4px solid var(--color-input-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.no-results {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-text-secondary);
+}
+
+/* Container para alinhar os botões */
+.form-actions {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: flex-end; /* Alinha botões à direita */
+  gap: 1rem;
+}
+
+/* =================================== */
+/* === AJUSTES PARA RESPONSIVIDADE === */
+/* =================================== */
+@media (max-width: 600px) {
+  :host {
+    padding: 1rem; /* Menos padding na tela toda */
+  }
+
+  .user-search-card {
+    padding: 1.5rem; /* Menos padding no card */
+
+    /* * ===================================
+     * === ALTERAÇÃO AQUI ===
+     * Adicionado ajuste de margem para telas menores.
+     * ===================================
+     */
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .search-header h1 {
+    font-size: 1.5rem; /* Título um pouco menor */
+  }
+
+  .user-item {
+    padding: 0.75rem; /* Menos padding nos itens da lista */
+    gap: 0.75rem;
+  }
+
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  .add-friend-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse; /* Empilha os botões em telas pequenas */
+  }
+}

@@ -20,8 +20,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 import java.util.UUID;
 import static api.example.SimpleNotes.infrastructure.exception.ExceptionMessages.*;
 
@@ -105,8 +103,8 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public PageDTO<UserResponse> findAll(Pageable pageable) {
-        Page<User> users = repository.findAllByIsAccountNonLockedIsTrue(pageable);
+    public PageDTO<UserResponse> findAll(Pageable pageable, Long id) {
+        Page<User> users = repository.findAllByIsAccountNonLockedIsTrueAndIdNot(pageable, id);
 
         Page<UserResponse> dtosPage = users.map(UserResponse::new);
 

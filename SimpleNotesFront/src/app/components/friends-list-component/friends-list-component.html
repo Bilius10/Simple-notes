@@ -2,7 +2,7 @@
 
   <div class="user-search-card">
     <header class="search-header">
-      <h1>Encontrar Usuários</h1>
+      <h1>Amigos</h1>
       <p>Busque e conecte-se com outros membros da plataforma.</p>
     </header>
 
@@ -21,24 +21,23 @@
         <p>Nenhum usuário encontrado.</p>
       </div>
 
-      <div *ngFor="let user of filteredUsers()" class="user-item">
-        <div class="user-avatar">{{ user.name.substring(0, 2).toUpperCase() }}</div>
+      <div *ngFor="let friendRequest of filteredUsers()" class="user-item">
+        <div class="user-avatar">{{ friendRequest.userResponse.name.substring(0, 2).toUpperCase() }}</div>
         <div class="user-details">
-          <span class="user-name">{{ user.name }}</span>
-          <span class="user-email">{{ user.email }}</span>
+          <span class="user-name">{{ friendRequest.userResponse.name }}</span>
+          <span class="user-email">{{ friendRequest.userResponse.email }}</span>
         </div>
-        <button (click)="addFriend(user.id)" class="add-friend-btn" title="Adicionar Amigo">
-          <i class="fa-solid fa-user-plus"></i>
+        <button (click)="deletedFriend(friendRequest.id)" class="delete-btn" title="Excluir">
+          <i class="fa-solid fa-plus"></i>
         </button>
       </div>
     </div>
 
     <div class="form-actions">
-      <button type="button" routerLink="/profile-card" class="btn btn-secondary">Voltar</button>
-      <button type="button" routerLink="/friends" class="btn btn-secondary">Meus Amigos</button>
-      <button type="button" routerLink="/pending" class="btn btn-secondary">Pedidos Recebidos</button>
+      <button type="button" routerLink="/list-users" class="btn btn-secondary">Voltar</button>
       <button type="submit" class="btn btn-primary">Carregar mais...</button>
     </div>
   </div>
 
 </main>
+

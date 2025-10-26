@@ -10,6 +10,10 @@ import {ProfileCardComponent} from './components/profile-card-component/profile-
 import {AddFriendComponent} from './components/add-friend-component/add-friend-component';
 import {EditProfileComponent} from './components/edit-profile-component/edit-profile-component';
 import {NotifcationComponent} from './components/notifcation-component/notifcation-component';
+import {FriendsListComponent} from './components/friends-list-component/friends-list-component';
+import {
+  PendingFriendRequestsComponent
+} from './components/pending-friend-requests-component/pending-friend-requests-component';
 
 
 export const routes: Routes = [
@@ -30,7 +34,9 @@ export const routes: Routes = [
       { path: 'profile-card', component: ProfileCardComponent},
       { path: 'list-users', component: AddFriendComponent},
       { path: 'edit-profile', component: EditProfileComponent},
-      { path: 'notifications', component: NotifcationComponent}
+      { path: 'notifications', component: NotifcationComponent},
+      { path: 'friends', component: FriendsListComponent},
+      { path: 'pending', component: PendingFriendRequestsComponent}
     ]
   },
 

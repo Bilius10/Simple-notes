@@ -1,7 +1,6 @@
 package api.example.SimpleNotes.domain.friend_request.dto.response;
 
 import api.example.SimpleNotes.domain.friend_request.FriendRequest;
-import api.example.SimpleNotes.domain.user.User;
 
 public record FriendRequestResponse(
         Long id,

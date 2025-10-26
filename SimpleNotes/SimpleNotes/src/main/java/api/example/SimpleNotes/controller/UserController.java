@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,12 +28,13 @@ public class UserController {
             @RequestParam(defaultValue = "0", required = false) int page,
             @RequestParam(defaultValue = "10", required = false) int size,
             @RequestParam(defaultValue = "name", required = false) String sortBy,
-            @RequestParam(defaultValue = "true", required = false) boolean ascending
+            @RequestParam(defaultValue = "true", required = false) boolean ascending,
+            @AuthenticationPrincipal User authenticatedUser
     ) {
         Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        return ResponseEntity.ok().body(service.findAll(pageable));
+        return ResponseEntity.ok().body(service.findAll(pageable, authenticatedUser.getId()));
     }
 
     @GetMapping("/{id}")

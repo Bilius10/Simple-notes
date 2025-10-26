@@ -2,7 +2,6 @@ import { Component, signal, WritableSignal, computed, Signal } from '@angular/co
 import { CommonModule } from '@angular/common';
 import {User, UserService} from '../../service/user-service';
 import {RouterLink} from '@angular/router';
-import {FormsModule} from '@angular/forms';
 import {FriendRequestService} from '../../service/friend-request-service';
 import {ToastrService} from 'ngx-toastr';
 

@@ -38,7 +38,7 @@ export class ConfirmEmailComponent {
         next: (response: any) => {
           console.log('Email confirmado com sucesso:', response);
           this.status.set('success');
-          this.toastr.error('Você já pode fazer login.', 'Email confirmado com sucesso!');
+          this.toastr.success('Você já pode fazer login.', 'Email confirmado com sucesso!');
           this.router.navigate(['/auth/login']);
         },
         error: (error) => {
