@@ -13,7 +13,10 @@ public enum ExceptionMessages {
     INVALID_CREDENTIALS("Credenciais inválidas"),
     TOKEN_IS_USED("Token já utilizado"),
     EMAIL_NOT_CONFIRMED("Email não confirmado, verifique sua caixa de email"),
-    NOTIFICATION_NOT_FOUND("Notificação não encontrada");
+    NOTIFICATION_NOT_FOUND("Notificação não encontrada"),
+    FRIEND_REQUEST_ALREADY_PENDING("Você já possui um pedido de amizade pendente para este usuário."),
+    CANNOT_SEND_REQUEST_TO_YOURSELF("Você não pode enviar um pedido para si mesmo.");
+
 
     private final String message;
 

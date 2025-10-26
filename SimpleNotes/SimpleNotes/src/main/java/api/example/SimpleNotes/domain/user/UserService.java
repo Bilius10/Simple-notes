@@ -120,9 +120,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public User findById(Long id) {
-        Optional<String> currentAuditor = auditorAware.getCurrentAuditor();
-
-        return repository.findByIdAndCreatedByAndIsAccountNonLockedIsTrue(id, currentAuditor.get())
+        return repository.findByIdAndIsAccountNonLockedIsTrue(id)
                 .orElseThrow(() -> new ServiceException(USER_NOT_FOUND.getMessage(), HttpStatus.NOT_FOUND));
     }
 

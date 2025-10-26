@@ -1,6 +1,5 @@
 package api.example.SimpleNotes.domain.user.dto.request;
 
-import api.example.SimpleNotes.infrastructure.annotation.StrongPassword;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;

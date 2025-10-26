@@ -2,6 +2,7 @@ import {Component, signal, OnInit, Inject, PLATFORM_ID} from '@angular/core';
 import {CommonModule, isPlatformBrowser} from '@angular/common';
 import {RouterLink} from '@angular/router';
 import {NotificationService, Notification} from '../../service/notification-service';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-notifcation-component',
@@ -17,7 +18,8 @@ export class NotifcationComponent implements OnInit {
   public unreadCount = signal(0);
 
   constructor(
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -37,6 +39,7 @@ export class NotifcationComponent implements OnInit {
         this.isLoading.set(false);
       },
       error: (err) => {
+        this.toastr.error(err.error.message, 'Erro ao carregar notificações!');
         console.error("Erro ao carregar notificações:", err);
         this.isLoading.set(false);
       }
@@ -60,6 +63,7 @@ export class NotifcationComponent implements OnInit {
     this.notificationService.markAsRead(id.toString()).subscribe({
       error: (err) => {
         console.error("Erro ao marcar como lida:", err);
+        this.toastr.error(err.error.message, 'Erro ao marcar como lida!');
 
         this.notifications.update(currentList =>
           currentList.map(n => (n.id === id ? { ...n, isRead: false } : n))
@@ -76,6 +80,7 @@ export class NotifcationComponent implements OnInit {
     this.notificationService.markAllAsRead().subscribe({
       error: (err) => {
         console.error("Erro ao marcar todas como lidas:", err);
+        this.toastr.error(err.error.message, 'Erro ao marcar todas como lidas!');
 
         this.loadNotifications();
         this.loadUnreadCount();

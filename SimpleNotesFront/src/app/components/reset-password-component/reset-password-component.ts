@@ -3,6 +3,7 @@ import {ActivatedRoute, Router, RouterModule} from '@angular/router';
 import {AuthService} from '../../service/auth-service';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-reset-password-component',
@@ -14,21 +15,23 @@ export class ResetPasswordComponent {
 
   newPassword = '';
   isPasswordVisible = false;
-  responseMessage = signal<String>('');
 
-  constructor(private endpoint: ActivatedRoute, private router: Router,private authService: AuthService) {}
+  constructor(private endpoint: ActivatedRoute,
+              private router: Router,
+              private authService: AuthService,
+              private toastr: ToastrService) {}
 
   onSubmit(): void {
 
     const token = this.endpoint.snapshot.paramMap.get('token');
 
     if (!token) {
-      this.responseMessage.set("Nenhum token de redefinição de senha foi fornecido. O link pode estar quebrado.");
+      this.toastr.error('Nenhum token de redefinição de senha foi fornecido.', 'Token invalido!');
       return;
     }
 
     if (!this.newPassword) {
-      this.responseMessage.set("Por favor, insira uma nova senha.");
+      this.toastr.error("Por favor, insira uma nova senha.", 'Senha invalida!');
       return;
     }
 
@@ -39,16 +42,31 @@ export class ResetPasswordComponent {
 
     this.authService.resetPassword(token, resetPasswordData).subscribe({
       next: (response: any) => {
-        this.responseMessage.set("Senha redefinida com sucesso! Você já pode fazer login com sua nova senha.");
+        this.toastr.success('Você já pode fazer login com sua nova senha.', "Senha redefinida com sucesso!");
         this.router.navigate(['/auth/login']);
       },
       error: (error) => {
-        this.responseMessage.set("" + (error.error.message || 'Ocorreu um erro ao tentar redefinir a senha. O token pode ser inválido ou expirado.'));
+        console.error('Erro ao redefinir senha:', error);
+
+        const backendError = error.error;
+        let displayMessage = 'Erro desconhecido. Tente novamente.';
+
+        if (backendError) {
+          if (backendError.errors) {
+            displayMessage = Object.values(backendError.errors).join('<br>');
+          } else if (backendError.message) {
+            displayMessage = backendError.message;
+          }
+        }
+
+        this.toastr.error(displayMessage, 'Erro ao redefinir senha!', {
+          enableHtml: true,
+          timeOut: 5000
+        });
       }
     })
 
     setTimeout(() => {
-      this.responseMessage.set('');
       this.newPassword = '';
     }, 2000);
   }

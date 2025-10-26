@@ -4,6 +4,7 @@ import {Router, RouterLink} from '@angular/router';
 import {AuthService} from '../../service/auth-service';
 import {UserService} from '../../service/user-service';
 import {isPlatformBrowser} from '@angular/common';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-edit-profile-component',
@@ -15,11 +16,11 @@ export class EditProfileComponent {
 
   name = signal<string>('');
   email = signal<string>('');
-  responseMessage = signal<string>('');
 
   constructor(
     private userService: UserService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private toastr: ToastrService
   ) {
     this.fetchUsers()
   }
@@ -38,17 +39,15 @@ export class EditProfileComponent {
     if (isPlatformBrowser(this.platformId)) {
       this.userService.updateUser(sessionStorage.getItem('id'), updateData).subscribe({
         next: (user) => {
-          this.responseMessage.set("Dados atualizados");
+          this.toastr.success("Sucesso", "Dados atualizados!");
         },
         error: (err) => {
-          this.responseMessage.set("Erro ao atualizar dados");
-          console.error('Falha ao buscar usuário:', err);
+          this.toastr.error(err.error.message, "Falha ao buscar usuário!");
         }
       });
     }
 
     setTimeout(() => {
-      this.responseMessage.set('');
     }, 2000);
   }
 
@@ -61,6 +60,7 @@ export class EditProfileComponent {
         },
         error: (err) => {
           console.error('Falha ao buscar usuário:', err);
+          this.toastr.error(err.error.message, "Falha ao buscar dados!");
         }
       });
     }

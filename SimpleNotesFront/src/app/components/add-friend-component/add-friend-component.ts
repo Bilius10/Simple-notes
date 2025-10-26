@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import {User, UserService} from '../../service/user-service';
 import {RouterLink} from '@angular/router';
 import {FormsModule} from '@angular/forms';
+import {FriendRequestService} from '../../service/friend-request-service';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-add-friend-component',
@@ -12,7 +14,9 @@ import {FormsModule} from '@angular/forms';
 })
 export class AddFriendComponent {
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService,
+              private friendRequestService: FriendRequestService,
+              private toastr: ToastrService) {}
 
   users: WritableSignal<User[]> = signal([]);
   currentPage: WritableSignal<number> = signal(0);
@@ -50,7 +54,7 @@ export class AddFriendComponent {
         this.isLoading.set(false);
       },
       error: (err) => {
-        console.error('Falha ao buscar usuários:', err);
+        this.toastr.error(err.error.message, "Falha ao buscar usuário!");
         this.isLoading.set(false);
 
       }
@@ -67,8 +71,28 @@ export class AddFriendComponent {
     this.searchTerm.set(input.value);
   }
 
-  addFriend(userId: number): void {
-    alert(`Funcionalidade futura: Enviar pedido de amizade para o usuário com ID: ${userId}`);
-  }
+  addFriend(receiverId: number): void {
+    const senderId = sessionStorage.getItem('id');
 
+    if (!senderId) {
+      this.toastr.error("O usuário pode não estar logado", " ID do remetente não encontrado na sessão!");
+      console.error('Erro: ID do remetente não encontrado na sessão. O usuário pode não estar logado.');
+      return;
+    }
+
+    const friendRequestCreateData = {
+      senderId: Number(senderId),
+      receiverId: receiverId
+    }
+
+    console.log(friendRequestCreateData)
+    this.friendRequestService.createFriendRequest(friendRequestCreateData).subscribe({
+      next: (response) => {
+        this.toastr.success("Aguarde a resposta", "Pedido de amizade enviado!");
+      },
+      error: (err) => {
+        this.toastr.error(err.error.message, "Falha ao enviar pedido de amizade!");
+      }
+    });
+  }
 }

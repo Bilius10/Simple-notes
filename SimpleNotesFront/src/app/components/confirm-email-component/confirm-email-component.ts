@@ -2,6 +2,7 @@ import {Component, signal} from '@angular/core';
 import {Route, Router, RouterModule} from '@angular/router';
 import {AuthService} from '../../service/auth-service';
 import { ActivatedRoute } from '@angular/router';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-confirm-email-component',
@@ -12,9 +13,11 @@ import { ActivatedRoute } from '@angular/router';
 export class ConfirmEmailComponent {
 
     status = signal<String>('loading');
-    message = signal<String>('');
 
-    constructor(private endpoint: ActivatedRoute, private router: Router,private authService: AuthService) {}
+    constructor(private endpoint: ActivatedRoute,
+                private router: Router,
+                private authService: AuthService,
+                private toastr: ToastrService) {}
 
     onSubmit(): void {
 
@@ -22,7 +25,7 @@ export class ConfirmEmailComponent {
 
       if (!token) {
         this.status.set('error');
-        this.message.set('Nenhum token de confirmação foi fornecido. O link pode estar quebrado.');
+        this.toastr.error('Nenhum token de redefinição de senha foi fornecido.', 'Token invalido!');
         return;
       }
 
@@ -35,13 +38,29 @@ export class ConfirmEmailComponent {
         next: (response: any) => {
           console.log('Email confirmado com sucesso:', response);
           this.status.set('success');
-          this.message.set('Email confirmado com sucesso! Você já pode fazer login.');
+          this.toastr.error('Você já pode fazer login.', 'Email confirmado com sucesso!');
           this.router.navigate(['/auth/login']);
         },
         error: (error) => {
-          console.error('Erro na confirmação do email:', error);
+          console.error('Erro ao confirmar email:', error);
+
           this.status.set('error');
-          this.message.set(error.error.message || 'Ocorreu um erro ao confirmar o email. O token pode ser inválido ou expirado.');
+
+          const backendError = error.error;
+          let displayMessage = 'Erro desconhecido. Tente novamente.';
+
+          if (backendError) {
+            if (backendError.errors) {
+              displayMessage = Object.values(backendError.errors).join('<br>');
+            } else if (backendError.message) {
+              displayMessage = backendError.message;
+            }
+          }
+
+          this.toastr.error(displayMessage, 'Erro ao confirmar email!', {
+            enableHtml: true,
+            timeOut: 5000
+          });
         }
       });
     }

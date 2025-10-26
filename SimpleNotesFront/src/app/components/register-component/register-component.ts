@@ -3,6 +3,7 @@ import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {Router, RouterModule} from '@angular/router';
 import {AuthService} from '../../service/auth-service';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-register-component',
@@ -14,9 +15,11 @@ export class RegisterComponent {
   name = '';
   email = '';
   password = '';
-  responseMessage = signal<string>('');
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(private router: Router,
+              private authService: AuthService,
+              private toastr: ToastrService
+  ) {}
 
   async onSubmit(): Promise<void> {
 
@@ -29,17 +32,31 @@ export class RegisterComponent {
       this.authService.register(registerData).subscribe({
         next: (response) => {
           console.log('Registro bem-sucedido:', response);
-          this.responseMessage.set("Registro bem-sucedido!");
+          this.toastr.success('Você será redirecionado para o login.', 'Registro bem-sucedido!');
           this.router.navigate(['/auth/login']);
         },
         error: (error) => {
           console.error('Erro no registro:', error);
-          this.responseMessage.set(error.error.message)
+
+          const backendError = error.error;
+          let displayMessage = 'Não foi possível completar o registro. Tente novamente.';
+
+          if (backendError) {
+            if (backendError.errors) {
+              displayMessage = Object.values(backendError.errors).join('<br>');
+            } else if (backendError.message) {
+              displayMessage = backendError.message;
+            }
+          }
+
+          this.toastr.error(displayMessage, 'Erro ao registrar:', {
+            enableHtml: true,
+            timeOut: 5000
+          });
         }
       });
 
       setTimeout(() => {
-        this.responseMessage.set('');
         this.name = '';
         this.email = '';
         this.password = '';

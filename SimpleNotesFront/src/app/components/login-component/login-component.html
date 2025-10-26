@@ -6,15 +6,14 @@
       <h1>Bem-vindo(a) de volta!</h1>
     </header>
 
-    <form (ngSubmit)="onSubmit()">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
       <div class="form-group">
         <label for="email">E-mail</label>
         <input
           type="email"
           id="email"
-          name="email"
-          [(ngModel)]="email"
+          formControlName="email"
           required
           placeholder="seu.email@exemplo.com"
           autocomplete="email">
@@ -25,15 +24,19 @@
         <input
           type="password"
           id="password"
-          name="password"
-          [(ngModel)]="password"
+          formControlName="password"
           required
           placeholder="Sua senha"
           autocomplete="current-password">
       </div>
 
-      <p class="response-menssage">{{responseMessage()}}</p>
-      <button type="submit" class="btn btn-primary">Entrar</button>
+      <button type="submit" class="btn btn-primary" [disabled]="loginForm.invalid || isLoading()">
+        @if (isLoading()) {
+          <span>Carregando...</span>
+        } @else {
+          <span>Entrar</span>
+        }
+      </button>
     </form>
 
     <div class="actions">
@@ -43,3 +46,4 @@
 
   </div>
 </main>
+
