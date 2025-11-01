@@ -1,0 +1,30 @@
+<main class="vault-list-container">
+
+  <div *ngIf="vaults.length > 0" class="vault-grid">
+
+    <div *ngFor="let vault of vaults" class="vault-card" (click)="navigateToVault(vault.id)">
+
+      <button class="delete-vault-btn" (click)="onDeleteVault(vault.id, $event)" title="Excluir Cofre">
+        <i class="fas fa-trash-alt"></i>
+      </button>
+
+      <div class="vault-card-icon">
+        <i class="fa-solid fa-vault"></i>
+      </div>
+      <div class="vault-card-content">
+        <h3 class="vault-card-title">{{ vault.name }}</h3>
+        <p class="vault-card-description">{{ vault.description }}</p>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="load-more-container" *ngIf="!isLoading && hasNextPage()">
+    <button (click)="onLoadMore()" type="button" class="btn btn-primary">
+      Carregar Mais
+    </button>
+  </div>
+
+  <div *ngIf="isLoading && vaults.length > 0" class="loading-spinner-inline"></div>
+
+</main>

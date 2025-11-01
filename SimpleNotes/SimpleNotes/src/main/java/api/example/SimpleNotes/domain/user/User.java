@@ -3,6 +3,7 @@ package api.example.SimpleNotes.domain.user;
 import api.example.SimpleNotes.domain.friend_request.FriendRequest;
 import api.example.SimpleNotes.domain.notification.Notification;
 import api.example.SimpleNotes.domain.user_token.UserToken;
+import api.example.SimpleNotes.domain.wallet_user.WalletUser;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -78,6 +79,10 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "userReceiver", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<FriendRequest> receivedFriendRequests = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<WalletUser> walletUsers = new ArrayList<>();
 
     public User(String email, String name, String password) {
         this.email = email;

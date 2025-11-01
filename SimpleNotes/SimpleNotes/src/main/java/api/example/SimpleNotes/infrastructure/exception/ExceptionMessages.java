@@ -17,7 +17,9 @@ public enum ExceptionMessages {
     FRIEND_REQUEST_ALREADY_PENDING("Você já possui um pedido de amizade pendente para este usuário."),
     CANNOT_SEND_REQUEST_TO_YOURSELF("Você não pode enviar um pedido para si mesmo."),
     FRIEND_REQUEST_NOT_FOUND("Solicitação de amizade não encontrada"),
-    FRIEND_REQUEST_ALREADY_ANSWERED("Solicitação de amizade já respondida");
+    FRIEND_REQUEST_ALREADY_ANSWERED("Solicitação de amizade já respondida"),
+    WALLET_NOT_FOUND("Cofre não encontrado"),
+    USER_IS_MEMBER_OF_WALLET("Usuário já é membro do cofre");
 
 
     private final String message;

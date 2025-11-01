@@ -1,0 +1,66 @@
+<main class="vault-form-container">
+  <div class="vault-form-card">
+
+    <header class="vault-form-header">
+      <h1>Criar Novo Cofre</h1>
+      <p>Preencha os dados para registrar seu novo cofre seguro.</p>
+    </header>
+
+    <form (ngSubmit)="saveVault()">
+
+      <div class="form-preview-container">
+
+        <div class="form-inputs">
+
+          <div class="form-group">
+            <label for="vault-title">Título do Cofre</label>
+            <input
+              type="text"
+              id="vault-title"
+              class="form-control"
+              placeholder="Ex: Documentos Pessoais"
+              [(ngModel)]="vaultTitle"
+              name="vaultTitle"
+              required>
+          </div>
+
+          <div class="form-group">
+            <label for="vault-description">Descrição (Opcional)</label>
+            <textarea
+              id="vault-description"
+              class="form-control"
+              placeholder="Adicione uma breve descrição sobre o conteúdo deste cofre..."
+              [(ngModel)]="vaultDescription"
+              name="vaultDescription"></textarea>
+          </div>
+
+        </div>
+
+        <div class="form-preview">
+          <h3>Preview do Cofre</h3>
+
+          <h4 class="preview-title">
+            <span *ngIf="vaultTitle; else titlePlaceholder">{{ vaultTitle }}</span>
+            <ng-template #titlePlaceholder>
+              <span class="preview-placeholder">Seu Título</span>
+            </ng-template>
+          </h4>
+
+          <p class="preview-description">
+            <span *ngIf="vaultDescription; else descPlaceholder">{{ vaultDescription }}</span>
+            <ng-template #descPlaceholder>
+              <span class="preview-placeholder">Sua descrição aparecerá aqui...</span>
+            </ng-template>
+          </p>
+        </div>
+
+      </div>
+
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Salvar Cofre</button>
+      </div>
+
+    </form>
+  </div>
+</main>

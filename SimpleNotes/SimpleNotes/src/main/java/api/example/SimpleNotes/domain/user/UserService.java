@@ -32,7 +32,6 @@ public class UserService {
     private final TokenService tokenService;
     private final UserTokenService userTokenService;
     private final ApplicationEventPublisher eventPublisher;
-    private final AuditorAwareImpl auditorAware;
     private final NotificationService notificationService;
 
     @Transactional

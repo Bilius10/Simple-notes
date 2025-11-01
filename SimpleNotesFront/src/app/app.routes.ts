@@ -14,6 +14,8 @@ import {FriendsListComponent} from './components/friends-list-component/friends-
 import {
   PendingFriendRequestsComponent
 } from './components/pending-friend-requests-component/pending-friend-requests-component';
+import {CreateWalletComponent} from './components/create-wallet-component/create-wallet-component';
+import {ViewWalletsComponent} from './components/view-wallets-component/view-wallets-component';
 
 
 export const routes: Routes = [
@@ -36,7 +38,9 @@ export const routes: Routes = [
       { path: 'edit-profile', component: EditProfileComponent},
       { path: 'notifications', component: NotifcationComponent},
       { path: 'friends', component: FriendsListComponent},
-      { path: 'pending', component: PendingFriendRequestsComponent}
+      { path: 'pending', component: PendingFriendRequestsComponent},
+      { path: 'create-wallet', component: CreateWalletComponent},
+      { path: 'view-wallets', component: ViewWalletsComponent}
     ]
   },
 

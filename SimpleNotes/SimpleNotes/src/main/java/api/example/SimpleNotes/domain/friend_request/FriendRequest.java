@@ -2,7 +2,6 @@ package api.example.SimpleNotes.domain.friend_request;
 
 import api.example.SimpleNotes.domain.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

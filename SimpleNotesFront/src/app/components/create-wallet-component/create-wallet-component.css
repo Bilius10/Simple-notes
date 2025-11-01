@@ -1,0 +1,209 @@
+:host {
+  --color-background: #121212;
+  --color-card-background: #1e1e1e;
+  --color-primary: #e94560;
+  --color-primary-hover: #d1304a;
+  --color-text: #e0e0e0;
+  --color-text-secondary: #a0a0a0;
+  --color-input-background: #2a2a2a;
+  --color-input-border: #444;
+  --color-input-focus: var(--color-primary);
+  --color-success: #4CAF50;
+  --color-secondary-background: #2a2a2a;
+
+  --border-radius: 0.5rem;
+  --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  --transition-speed: 0.3s;
+
+  display: block;
+  padding: 2rem 1rem;
+  background-color: var(--color-background);
+  box-sizing: border-box;
+  min-height: 100vh;
+}
+
+.vault-form-card {
+  background-color: var(--color-card-background);
+  padding: 2.5rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  width: 100%;
+  max-width: 60rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin: 1rem auto;
+}
+
+.vault-form-header {
+  text-align: center;
+}
+
+.vault-form-header h1 {
+  color: var(--color-text);
+  font-size: 1.75rem;
+  margin: 0 0 0.5rem 0;
+}
+
+.vault-form-header p {
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.form-preview-container {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+}
+
+.form-inputs {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-preview {
+  flex: 1;
+  background-color: var(--color-input-background);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+}
+
+.form-preview h3 {
+  color: var(--color-text);
+  margin-top: 0;
+  border-bottom: 1px solid var(--color-input-border);
+  padding-bottom: 0.75rem;
+  font-size: 1.1rem;
+}
+
+.preview-title {
+  color: var(--color-primary);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 1rem 0 0.5rem 0;
+  word-wrap: break-word;
+}
+
+.preview-description {
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.preview-placeholder {
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--border-radius);
+  background-color: var(--color-input-background);
+  color: var(--color-text);
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: all var(--transition-speed) ease;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--color-input-focus);
+  box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.3);
+}
+
+textarea.form-control {
+  min-height: 200px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.form-actions {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.btn {
+  padding: 0.875rem 1.25rem;
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color var(--transition-speed) ease, transform 0.2s ease;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background-color: var(--color-secondary-background);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-input-border);
+}
+
+.btn-secondary:hover {
+  background-color: #3a3a3a;
+  color: var(--color-text);
+}
+
+@media (max-width: 900px) {
+  .form-preview-container {
+    flex-direction: column;
+  }
+
+  .form-preview {
+    margin-top: 1.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  :host {
+    padding: 1rem;
+  }
+
+  .vault-form-card {
+    padding: 1.5rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .vault-form-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
