@@ -47,10 +47,19 @@ public class WalletController {
         return ResponseEntity.ok().body(walletResponse);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Void> delete(@RequestParam Long walletId) {
-        service.delete(walletId);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<WalletResponse> get(@AuthenticationPrincipal User authenticatedUser, @PathVariable Long id) {
+        Wallet wallet = service.findById(id, authenticatedUser.getId());
+        WalletResponse walletResponse = new WalletResponse(wallet);
+
+        return ResponseEntity.ok().body(walletResponse);
     }
 }

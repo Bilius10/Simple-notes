@@ -1,0 +1,22 @@
+<div class="vault-detail-container">
+
+  @if (wallet(); as w) {
+    <header class="vault-header">
+      <h1 id="vault-name">{{ w.name }}</h1>
+      <p id="vault-description">
+        {{ w.description }}
+      </p>
+    </header>
+  } @else {
+    <p>Carregando dados do cofre...</p>
+  }
+
+  <main class="vault-content">
+    <h2>Documentos</h2>
+    <div class="documents-placeholder">
+      <p>Em breve, seus documentos aparecerão aqui.</p>
+      <span>(Área reservada para a lista de documentos)</span>
+    </div>
+  </main>
+
+</div>

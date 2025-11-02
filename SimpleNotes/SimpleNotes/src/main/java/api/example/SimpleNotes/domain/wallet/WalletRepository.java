@@ -19,4 +19,11 @@ public interface WalletRepository extends JpaRepository<Wallet,Long> {
     Page<Wallet> findAllByUserId(Long userId, Pageable pageable);
 
     Optional<Wallet> findByIdAndCreatedBy(Long id, String createdBy);
+
+    @Query("""
+            SELECT w FROM Wallet w
+            JOIN WalletUser wu ON wu.wallet.id = w.id
+            WHERE wu.wallet.id = :walletId AND wu.user.id = :userId
+            """)
+    Optional<Wallet> findWalletByIdAndMemberId(Long walletId, Long userId);
 }

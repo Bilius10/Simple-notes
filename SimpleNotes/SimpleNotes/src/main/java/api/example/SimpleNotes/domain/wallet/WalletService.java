@@ -1,5 +1,6 @@
 package api.example.SimpleNotes.domain.wallet;
 
+import api.example.SimpleNotes.domain.user.UserService;
 import api.example.SimpleNotes.domain.wallet.dto.response.WalletResponse;
 import api.example.SimpleNotes.domain.wallet_user.WalletUser;
 import api.example.SimpleNotes.domain.wallet_user.WalletUserService;
@@ -12,9 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Optional;
-
 import static api.example.SimpleNotes.infrastructure.exception.ExceptionMessages.WALLET_NOT_FOUND;
 
 @Service
@@ -24,6 +23,7 @@ public class WalletService {
     private final WalletRepository repository;
     private final WalletUserService walletUserService;
     private final AuditorAwareImpl auditorAware;
+    private final UserService userService;
 
     @Transactional(readOnly = true)
     public PageDTO<WalletResponse> findAll(Pageable pageable, Long userId) {
@@ -61,4 +61,9 @@ public class WalletService {
         repository.delete(wallet);
     }
 
+    @Transactional(readOnly = true)
+    public Wallet findById(Long walletId, Long userId) {
+        return repository.findWalletByIdAndMemberId(walletId, userId)
+                .orElseThrow(() -> new ServiceException(WALLET_NOT_FOUND.getMessage(), HttpStatus.NOT_FOUND));
+    }
 }

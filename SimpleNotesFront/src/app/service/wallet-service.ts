@@ -29,7 +29,7 @@ export class WalletService {
     return this.http.post<WalletResponse>(`${this.apiUrl}/wallet`, walletData);
   }
 
-  getUsers(page: number, size: number): Observable<PageDTO<WalletResponse>> {
+  getWallets(page: number, size: number): Observable<PageDTO<WalletResponse>> {
     const params = {
       page: page.toString(),
       size: size.toString(),
@@ -39,7 +39,11 @@ export class WalletService {
     return this.http.get<PageDTO<WalletResponse>>(`${this.apiUrl}/wallet`, { params });
   }
 
-  deleteWallet(id : number): Observable<WalletResponse> {
-    return this.http.delete<WalletResponse>(`${this.apiUrl}/wallet/${id}`);
+  deleteWallet(id : number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/wallet/${id}`);
+  }
+
+  getWallet(id : number): Observable<WalletResponse> {
+    return this.http.get<WalletResponse>(`${this.apiUrl}/wallet/${id}`);
   }
 }

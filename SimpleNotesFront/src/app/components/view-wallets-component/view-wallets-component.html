@@ -1,9 +1,33 @@
 <main class="vault-list-container">
 
-  <div *ngIf="vaults.length > 0" class="vault-grid">
+  <div class="search-bar-container">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Buscar cofres..."
+      [value]="searchTerm()"
+      (input)="onSearch($event)"
+    />
+  </div>
 
-    <div *ngFor="let vault of vaults" class="vault-card" (click)="navigateToVault(vault.id)">
+  <div *ngIf="isLoading() && vaults().length === 0" class="loading-spinner-fullpage">
+    <p>Carregando cofres...</p>
+  </div>
 
+  <div *ngIf="!isLoading() && vaults().length === 0" class="empty-state">
+    <i class="fa-solid fa-box-open empty-icon"></i>
+    <h3>Nenhum cofre encontrado</h3>
+    <p>Parece que você ainda não criou nenhum cofre.</p>
+  </div>
+
+  <div *ngIf="!isLoading() && vaults().length > 0 && filteredVaults().length === 0" class="empty-state">
+    <i class="fa-solid fa-magnifying-glass empty-icon"></i>
+    <h3>Nenhum resultado</h3>
+    <p>Não encontramos nenhum cofre para "{{ searchTerm() }}".</p>
+  </div>
+
+  <div *ngIf="filteredVaults().length > 0" class="vault-grid">
+    <div *ngFor="let vault of filteredVaults()" class="vault-card" (click)="navigateToVault(vault.id)">
       <button class="delete-vault-btn" (click)="onDeleteVault(vault.id, $event)" title="Excluir Cofre">
         <i class="fas fa-trash-alt"></i>
       </button>
@@ -15,16 +39,18 @@
         <h3 class="vault-card-title">{{ vault.name }}</h3>
         <p class="vault-card-description">{{ vault.description }}</p>
       </div>
-
     </div>
   </div>
 
-  <div class="load-more-container" *ngIf="!isLoading && hasNextPage()">
-    <button (click)="onLoadMore()" type="button" class="btn btn-primary">
+  <div class="load-more-container" *ngIf="!isLoading() && !isLastPage() && !searchTerm()">
+    <button (click)="loadMore()" type="button" class="btn btn-primary">
       Carregar Mais
     </button>
   </div>
 
-  <div *ngIf="isLoading && vaults.length > 0" class="loading-spinner-inline"></div>
+  <div *ngIf="isLoading() && vaults().length > 0" class="loading-spinner-inline">
+    <p>Carregando...</p>
+  </div>
 
 </main>
+

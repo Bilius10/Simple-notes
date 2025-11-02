@@ -1,9 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, computed, Signal, signal, WritableSignal} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
-import {WalletResponse, WalletService} from '../../service/wallet-service';
+import {PageDTO, WalletResponse, WalletService} from '../../service/wallet-service';
 import {ToastrService} from 'ngx-toastr';
-import {PageDTO} from '../../service/user-service';
 import {Router} from '@angular/router';
 
 @Component({
@@ -14,15 +13,24 @@ import {Router} from '@angular/router';
   templateUrl: './view-wallets-component.html',
   styleUrl: './view-wallets-component.css'
 })
-export class ViewWalletsComponent implements OnInit {
+export class ViewWalletsComponent {
 
-  vaults: WalletResponse[] = [];
-  isLoading: boolean = false;
+  vaults: WritableSignal<WalletResponse[]> = signal([]);
+  isLoading: WritableSignal<boolean> = signal(false);
+  currentPage: WritableSignal<number> = signal(0);
+  isLastPage: WritableSignal<boolean> = signal(false);
+  totalElements: WritableSignal<number> = signal(0);
+  searchTerm: WritableSignal<string> = signal('');
 
-  currentPage: number = 0;
-  pageSize: number = 10;
-  totalPages: number = 0;
-  totalElements: number = 0;
+  filteredVaults: Signal<WalletResponse[]> = computed(() => {
+    const term = this.searchTerm().toLowerCase();
+    if (!term) {
+      return this.vaults();
+    }
+    return this.vaults().filter(vault =>
+      vault.name?.toLowerCase().includes(term)
+    );
+  });
 
   constructor(
     private walletService: WalletService,
@@ -31,57 +39,64 @@ export class ViewWalletsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.loadWallets(false);
+    this.fetchWallets();
   }
 
-  loadWallets(isLoadMore: boolean = false): void {
-    if (this.isLoading) return;
-
-    this.isLoading = true;
-    const pageToFetch = isLoadMore ? this.currentPage + 1 : 0;
-
-    if (!isLoadMore) {
-      this.vaults = [];
+  fetchWallets(): void {
+    if (this.isLoading() || this.isLastPage()) {
+      return;
     }
+    this.isLoading.set(true);
+    const pageToFetch = this.currentPage();
+    const pageSize = 10;
 
-    this.walletService.getUsers(pageToFetch, this.pageSize).subscribe({
+    this.walletService.getWallets(pageToFetch, pageSize).subscribe({
       next: (page: PageDTO<WalletResponse>) => {
-        this.vaults = [...this.vaults, ...page.data];
-        this.currentPage = page.page;
-        this.totalPages = page.totalPages;
-        this.totalElements = page.totalElements;
-        this.isLoading = false;
+        this.vaults.update(currentVaults => [...currentVaults, ...page.data]);
+        this.currentPage.set(page.page);
+        this.totalElements.set(page.totalElements);
+        this.isLastPage.set(page.page >= page.totalPages - 1);
+        this.isLoading.set(false);
       },
       error: (err) => {
         console.error('Erro ao carregar cofres:', err);
         this.toastr.error('Falha ao carregar seus cofres. Tente novamente.', 'Erro');
-        this.isLoading = false;
+        this.isLoading.set(false);
       }
     });
   }
 
-  onLoadMore(): void {
-    this.loadWallets(true);
+  loadMore(): void {
+    if (!this.isLoading() && !this.isLastPage()) {
+      this.currentPage.update(page => page + 1);
+      this.fetchWallets();
+    }
   }
 
-  hasNextPage(): boolean {
-    return this.currentPage < (this.totalPages - 1);
+  onSearch(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.searchTerm.set(input.value);
   }
 
   navigateToVault(vaultId: number): void {
-    this.router.navigate(['/', vaultId]);
+    this.router.navigate(['/wallet/', vaultId]);
   }
 
   onDeleteVault(vaultId: number, event: MouseEvent): void {
+    event.stopPropagation();
+
     this.walletService.deleteWallet(vaultId).subscribe({
       next: () => {
-          this.vaults = this.vaults.filter(vault => vault.id !== vaultId);
-          this.toastr.success('Cofre excluído com sucesso!', 'Sucesso');
-        },
-        error: (err) => {
-          console.error('Erro ao excluir cofre:', err);
-          this.toastr.error('Falha ao excluir o cofre. Tente novamente.', 'Erro');
-        }
-      });
-    }
+        this.vaults.update(currentVaults =>
+          currentVaults.filter(vault => vault.id !== vaultId)
+        );
+        this.totalElements.update(total => total - 1);
+        this.toastr.success('Cofre excluído com sucesso!', 'Sucesso');
+      },
+      error: (err) => {
+        console.error('Erro ao excluir cofre:', err);
+        this.toastr.error('Falha ao excluir o cofre. Tente novamente.', 'Erro');
+      }
+    });
+  }
 }
