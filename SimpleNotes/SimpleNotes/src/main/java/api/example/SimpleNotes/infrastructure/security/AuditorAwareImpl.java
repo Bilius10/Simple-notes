@@ -20,5 +20,4 @@ public class AuditorAwareImpl implements AuditorAware<String> {
 
         return Optional.of(authentication.getName());
     }
-
 }

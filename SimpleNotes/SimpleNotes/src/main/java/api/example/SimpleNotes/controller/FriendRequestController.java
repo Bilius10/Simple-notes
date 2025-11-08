@@ -17,6 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/friend-request")
@@ -58,7 +61,15 @@ public class FriendRequestController {
     @PostMapping
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<FriendRequestResponse> create(@RequestBody @Valid FriendRequestCreateRequest friendRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(friendRequest.senderId(), friendRequest.receiverId()));
+        FriendRequestResponse response = service.create(friendRequest.senderId(), friendRequest.receiverId());
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(response.id())
+                .toUri();
+
+        return ResponseEntity.created(location).body(response);
     }
 
     @DeleteMapping("/{id}")

@@ -5,11 +5,15 @@ import api.example.SimpleNotes.domain.user.dto.request.LoginRequestUser;
 import api.example.SimpleNotes.domain.user.dto.request.RegisterUser;
 import api.example.SimpleNotes.domain.user.dto.request.ResetPassword;
 import api.example.SimpleNotes.domain.user.dto.response.LoginResponseUser;
+import api.example.SimpleNotes.domain.user.dto.response.UserResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/auth")
@@ -19,10 +23,16 @@ public class AuthController {
     private final UserService service;
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody @Valid RegisterUser request) {
-        service.register(request.email(), request.name(), request.password());
+    public ResponseEntity<UserResponse> register(@RequestBody @Valid RegisterUser request) {
+        UserResponse response = service.register(request.email(), request.name(), request.password());
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(response.id())
+                .toUri();
+
+        return ResponseEntity.created(location).body(response);
     }
 
     @PostMapping("/login")

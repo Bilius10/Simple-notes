@@ -1,18 +1,26 @@
-import {Component, computed, Signal, signal, WritableSignal} from '@angular/core';
-import {PageDTO, WalletResponse, WalletService} from '../../service/wallet-service';
+import {Component, signal, WritableSignal} from '@angular/core';
+import {WalletResponse, WalletService} from '../../service/wallet-service';
 import {ToastrService} from 'ngx-toastr';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
+import {AddNoteComponent} from '../add-note-component/add-note-component';
+import {NoteResponse, NoteService} from '../../service/note-service';
+import {CommonModule} from '@angular/common';
+import {ViewNoteComponent} from '../view-note-component/view-note-component';
 
 @Component({
   selector: 'app-view-wallet-component',
-  imports: [],
+  imports: [AddNoteComponent, CommonModule, ViewNoteComponent],
   templateUrl: './view-wallet-component.html',
   styleUrl: './view-wallet-component.css'
 })
 export class ViewWalletComponent {
   wallet: WritableSignal<WalletResponse | null> = signal(null);
+  isModalOpen: WritableSignal<boolean> = signal(false); // Add note modal
+  public notes = signal<NoteResponse[]>([]);
+  selectedNote: WritableSignal<NoteResponse | null> = signal(null); // Document modal
 
   constructor(
+    private noteService: NoteService,
     private walletService: WalletService,
     private toastr: ToastrService,
     private endpoint: ActivatedRoute
@@ -27,12 +35,11 @@ export class ViewWalletComponent {
     }
 
     this.fetchWallet(Number(id));
+    this.loadNotes(Number(id));
   }
 
   fetchWallet(id: number): void {
-
     this.walletService.getWallet(id).subscribe({
-
       next: (data: WalletResponse) => {
         this.wallet.set(data);
       },
@@ -42,5 +49,37 @@ export class ViewWalletComponent {
         this.toastr.error(errorMsg, 'Erro');
       }
     });
+  }
+
+  loadNotes(id: number): void {
+    const page = 0;
+    const size = 20;
+
+    this.noteService.get(page, size, id).subscribe({
+      next: (pageDto) => {
+        const formattedData = pageDto.data.map(n => ({ ...n }));
+        this.notes.set(formattedData);
+      },
+      error: (err) => {
+        this.toastr.error(err.error?.message || 'Erro ao carregar notas.', 'Erro ao carregar notas!');
+        console.error('Erro ao carregar notas:', err);
+      }
+    });
+  }
+
+  openModal(): void {
+    this.isModalOpen.set(true);
+  }
+
+  closeModal(): void {
+    this.isModalOpen.set(false);
+  }
+
+  openNoteModal(note: NoteResponse): void {
+    this.selectedNote.set(note);
+  }
+
+  closeDocumentModal(): void {
+    this.selectedNote.set(null);
   }
 }

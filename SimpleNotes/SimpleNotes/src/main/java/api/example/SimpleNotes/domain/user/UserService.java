@@ -35,7 +35,7 @@ public class UserService {
     private final NotificationService notificationService;
 
     @Transactional
-    public void register(String email, String name, String password) {
+    public UserResponse register(String email, String name, String password) {
 
         this.validateRegistrationData(email, name);
 
@@ -46,8 +46,11 @@ public class UserService {
         User savedUser = repository.save(user);
 
         this.saveUserTokenAndSendEmail(savedUser);
+
+        return new UserResponse(savedUser);
     }
-    
+
+    @Transactional(readOnly = true)
     public LoginResponseUser login(String email, String password) {
         User user = repository.findByEmail(email)
                 .orElseThrow(() -> new ServiceException(USER_NOT_FOUND.getMessage(), HttpStatus.NOT_FOUND));

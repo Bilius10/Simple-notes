@@ -15,6 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/wallet")
@@ -42,9 +45,15 @@ public class WalletController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<WalletResponse> create(@AuthenticationPrincipal User authenticatedUser, @Valid @RequestBody WalletRequest request) {
         Wallet wallet = service.create(request.name(), request.description(), authenticatedUser.getId());
-        WalletResponse walletResponse = new WalletResponse(wallet);
+        WalletResponse response = new WalletResponse(wallet);
 
-        return ResponseEntity.ok().body(walletResponse);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(response.id())
+                .toUri();
+
+        return ResponseEntity.created(location).body(response);
     }
 
     @DeleteMapping("/{id}")

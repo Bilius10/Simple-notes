@@ -1,22 +1,47 @@
+<!-- html -->
 <div class="vault-detail-container">
 
-  @if (wallet(); as w) {
+  <div *ngIf="wallet(); else loading">
     <header class="vault-header">
-      <h1 id="vault-name">{{ w.name }}</h1>
-      <p id="vault-description">
-        {{ w.description }}
-      </p>
+      <h1 id="vault-name">{{ wallet()?.name }}</h1>
+      <p id="vault-description">{{ wallet()?.description }}</p>
     </header>
-  } @else {
+  </div>
+  <ng-template #loading>
     <p>Carregando dados do cofre...</p>
-  }
+  </ng-template>
 
   <main class="vault-content">
-    <h2>Documentos</h2>
-    <div class="documents-placeholder">
-      <p>Em breve, seus documentos aparecerão aqui.</p>
-      <span>(Área reservada para a lista de documentos)</span>
+    <div class="header-documentos">
+      <h2>Documentos</h2>
+      <button class="adicionar-documento-btn" (click)="openModal()">+ Adicionar Documento</button>
     </div>
-  </main>
 
+    <div *ngIf="notes().length > 0; else noDocs" class="documents-list">
+      <div *ngFor="let note of notes()" class="document-item" (click)="openNoteModal(note)" title="Abrir documento">
+        <!-- ícone simples de documento (SVG) -->
+        <div class="doc-icon" aria-hidden="true">
+          <svg width="48" height="60" viewBox="0 0 24 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="2" width="20" height="26" rx="2" stroke="#ccc" stroke-width="1.5" fill="#222"/>
+            <path d="M6 8H18" stroke="#9aa0a6" stroke-width="1.2" stroke-linecap="round"/>
+            <path d="M6 12H18" stroke="#9aa0a6" stroke-width="1.2" stroke-linecap="round"/>
+            <path d="M6 16H14" stroke="#9aa0a6" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <!-- opcional: título pequeno abaixo do ícone -->
+        <div class="doc-title">{{ note.title }}</div>
+      </div>
+    </div>
+
+    <ng-template #noDocs>
+      <div class="documents-placeholder">
+        <p>Em breve, seus documentos aparecerão aqui.</p>
+        <span>(Área reservada para a lista de documentos)</span>
+      </div>
+    </ng-template>
+  </main>
 </div>
+
+<app-add-note-component *ngIf="isModalOpen()" (closed)="closeModal()"></app-add-note-component>
+
+<app-view-note-component *ngIf="selectedNote()" [note]="selectedNote()" (closed)="closeDocumentModal()"></app-view-note-component>

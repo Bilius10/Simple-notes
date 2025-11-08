@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import static api.example.SimpleNotes.infrastructure.exception.ExceptionMessages.TOKEN_IS_USED;
@@ -18,6 +20,7 @@ public class UserTokenService {
     private final UserTokenRepository repository;
     private final PasswordEncoder encoder;
 
+    @Transactional
     public void saveUserToken(User user, String token, TokenType tokenType) {
 
         UserToken userToken = new UserToken(user, token, tokenType);
@@ -25,6 +28,7 @@ public class UserTokenService {
         repository.save(userToken);
     }
 
+    @Transactional(readOnly = true)
     public User validateAndUseToken(String rawToken) {
 
         UserToken userToken = repository.findByTokenHash(rawToken)

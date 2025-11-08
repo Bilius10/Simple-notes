@@ -1,7 +1,7 @@
-package api.example.SimpleNotes.domain.wallet;
+package api.example.SimpleNotes.domain.note;
 
-import api.example.SimpleNotes.domain.note.Note;
-import api.example.SimpleNotes.domain.wallet_user.WalletUser;
+import api.example.SimpleNotes.domain.wallet.Wallet;
+import api.example.SimpleNotes.infrastructure.encrypt.StringEncryptorConverter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -14,26 +14,31 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
-@Table(name = "wallet")
-@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 @Entity
-public class Wallet {
+@Table(name = "note")
+@EntityListeners(AuditingEntityListener.class)
+public class Note {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @Convert(converter = StringEncryptorConverter.class)
+    @Column(name = "title", length = 100)
+    private String title;
 
-    @Column(name = "description")
-    private String description;
+    @Convert(converter = StringEncryptorConverter.class)
+    @Column(name = "content", columnDefinition = "text")
+    private String content;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "wallet_id")
+    @JsonIgnore
+    private Wallet wallet;
 
     @CreatedBy
     @Column(name = "created_by")
@@ -51,17 +56,9 @@ public class Wallet {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<WalletUser> walletUsers = new ArrayList<>();
-
-    @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Note> notes = new ArrayList<>();
-
-
-    public Wallet(String name, String description) {
-        this.name = name;
-        this.description = description;
+    public Note(String title, String content, Wallet wallet) {
+        this.title = title;
+        this.content = content;
+        this.wallet = wallet;
     }
 }
