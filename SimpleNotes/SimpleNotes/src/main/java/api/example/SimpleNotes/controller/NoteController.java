@@ -1,24 +1,24 @@
 package api.example.SimpleNotes.controller;
 
 import api.example.SimpleNotes.domain.note.Note;
+import api.example.SimpleNotes.domain.note.NoteRepository;
 import api.example.SimpleNotes.domain.note.NoteService;
 import api.example.SimpleNotes.domain.note.dto.request.NoteCreate;
 import api.example.SimpleNotes.domain.note.dto.response.NoteResponse;
 import api.example.SimpleNotes.domain.user.User;
+import api.example.SimpleNotes.domain.wallet_user.WalletPermission;
 import api.example.SimpleNotes.infrastructure.dto.PageDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import java.net.URI;
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -28,6 +28,7 @@ public class NoteController {
     private  final NoteService noteService;
 
     @PostMapping
+    @PreAuthorize("hasRole('USER') and @wus.verifyHasPermission(#noteCreate.walletId, principal.id, T(api.example.SimpleNotes.domain.wallet_user.WalletPermission).CREATE)")
     public ResponseEntity<NoteResponse> create(@Valid @RequestBody NoteCreate noteCreate,
                                                @AuthenticationPrincipal User authenticatedUser) {
         Note note = noteService.create(noteCreate.title(), noteCreate.content(), noteCreate.walletId(), authenticatedUser.getId());
@@ -43,6 +44,7 @@ public class NoteController {
     }
 
     @GetMapping("/{walletId}")
+    @PreAuthorize("hasRole('USER') and @wus.verifyHasPermission(#walletId, principal.id, T(api.example.SimpleNotes.domain.wallet_user.WalletPermission).VIEW)")
     public ResponseEntity<PageDTO<NoteResponse>> getAll(
             @RequestParam(defaultValue = "0", required = false) int page,
             @RequestParam(defaultValue = "10", required = false) int size,
@@ -54,8 +56,17 @@ public class NoteController {
         Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        PageDTO<NoteResponse> response = noteService.findAll(walletId, authenticatedUser.getId(), pageable);
+        PageDTO<NoteResponse> response = noteService.findAll(walletId, pageable);
 
         return ResponseEntity.ok().body(response);
+    }
+
+    @DeleteMapping("/{noteId}")
+    @PreAuthorize("hasRole('USER') and @wus.verifyHasPermission(#walletId, principal.id, T(api.example.SimpleNotes.domain.wallet_user.WalletPermission).DELETE)")
+    public ResponseEntity<Void> delete(@PathVariable Long noteId,
+                                       @AuthenticationPrincipal User authenticatedUser,
+                                       @RequestParam Long walletId) {
+        noteService.delete(noteId);
+        return ResponseEntity.noContent().build();
     }
 }

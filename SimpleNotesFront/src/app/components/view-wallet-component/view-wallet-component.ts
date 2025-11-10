@@ -18,6 +18,7 @@ export class ViewWalletComponent {
   isModalOpen: WritableSignal<boolean> = signal(false); // Add note modal
   public notes = signal<NoteResponse[]>([]);
   selectedNote: WritableSignal<NoteResponse | null> = signal(null); // Document modal
+  walletId: string | null = null;
 
   constructor(
     private noteService: NoteService,
@@ -27,15 +28,15 @@ export class ViewWalletComponent {
   ) { }
 
   ngOnInit(): void {
-    const id = this.endpoint.snapshot.paramMap.get('id');
+    this.walletId = this.endpoint.snapshot.paramMap.get('id');
 
-    if (!id) {
+    if (!this.walletId) {
       this.toastr.error('Não foi possível encontrar o ID do cofre na URL.', 'ID inválido!');
       return;
     }
 
-    this.fetchWallet(Number(id));
-    this.loadNotes(Number(id));
+    this.fetchWallet(Number(this.walletId));
+    this.loadNotes(Number(this.walletId));
   }
 
   fetchWallet(id: number): void {
@@ -81,5 +82,19 @@ export class ViewWalletComponent {
 
   closeDocumentModal(): void {
     this.selectedNote.set(null);
+  }
+
+  deleteDocument(noteId: number): void {
+    this.noteService.delete(noteId, Number(this.walletId)).subscribe({
+      next: () => {
+        this.toastr.success('Nota deletada com sucesso!', 'Sucesso');
+        const walletId = this.walletId;
+        this.loadNotes(Number(this.walletId));
+      },
+      error: (err) => {
+        this.toastr.error(err.error?.message || 'Erro ao deletar nota.', 'Erro ao deletar nota!');
+        console.error('Erro ao deletar nota:', err);
+      }
+    });
   }
 }

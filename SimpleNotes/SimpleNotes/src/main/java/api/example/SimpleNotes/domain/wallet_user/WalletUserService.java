@@ -4,17 +4,17 @@ import api.example.SimpleNotes.domain.user.User;
 import api.example.SimpleNotes.domain.user.UserService;
 import api.example.SimpleNotes.domain.wallet.Wallet;
 import api.example.SimpleNotes.domain.wallet.WalletRepository;
-import api.example.SimpleNotes.infrastructure.exception.ExceptionMessages;
 import api.example.SimpleNotes.infrastructure.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static api.example.SimpleNotes.infrastructure.exception.ExceptionMessages.USER_IS_MEMBER_OF_WALLET;
 import static api.example.SimpleNotes.infrastructure.exception.ExceptionMessages.WALLET_NOT_FOUND;
 
-@Service
+@Service("wus")
 @RequiredArgsConstructor
 public class WalletUserService {
 
@@ -39,21 +39,18 @@ public class WalletUserService {
     }
 
     @Transactional(readOnly = true)
-    public void verifyHasPermisson(Long walletId, Long userId, WalletPermission permission) {
-        WalletUser walletUser = walletUserRepository.findByWalletIdAndUserId(walletId, userId)
-                .orElseThrow(() -> new ServiceException(WALLET_NOT_FOUND.getMessage(), HttpStatus.NOT_FOUND));
+    public boolean verifyHasPermission(Long walletId, Long userId, WalletPermission permission) {
+        WalletUser walletUser = walletUserRepository.findByWalletIdAndUserId(walletId, userId).orElse(null);
 
-        Boolean hasPermission;
-        switch (permission) {
-            case CREATE -> hasPermission = walletUser.getCanCreate();
-            case UPDATE -> hasPermission = walletUser.getCanUpdate();
-            case DELETE -> hasPermission = walletUser.getCanDelete();
-            case VIEW -> hasPermission = walletUser.getCanView();
-            default -> hasPermission = false;
+        if (walletUser == null) {
+            return false;
         }
 
-        if (!hasPermission) {
-            throw new ServiceException(ExceptionMessages.USER_NOT_HAS_PERMISSION.getMessage(), HttpStatus.FORBIDDEN);
-        }
+        return switch (permission) {
+            case CREATE -> walletUser.getCanCreate();
+            case UPDATE -> walletUser.getCanUpdate();
+            case DELETE -> walletUser.getCanDelete();
+            case VIEW -> walletUser.getCanView();
+        };
     }
 }

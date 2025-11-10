@@ -13,6 +13,7 @@
   --transition-speed: 0.3s;
   --doc-min-width: 120px; /* largura mínima para cada card de documento */
   --docs-gap: 1rem; /* espaçamento entre cards */
+  --mark-btn-size: 20px; /* tamanho padrão do botão circular */
 
   display: block;
   padding: 2rem 1rem;
@@ -65,8 +66,8 @@
 /* ===== Lista de Documentos (grid responsivo) ===== */
 .documents-list {
   display: grid;
-  /* usa auto-fit para preencher linhas automaticamente com base na largura mínima do card */
-  grid-template-columns: repeat(auto-fit, minmax(var(--doc-min-width), 1fr));
+  /* força até 10 colunas; quando houver mais, quebra para a próxima linha */
+  grid-template-columns: repeat(10, minmax(var(--doc-min-width), 1fr));
   gap: var(--docs-gap);
   align-items: start;
   margin-top: 1rem;
@@ -74,6 +75,7 @@
 
 /* Card do documento */
 .document-item {
+  position: relative; /* permite posicionar o botão no canto superior direito */
   background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
   border: 1px solid var(--color-input-border);
   border-radius: calc(var(--border-radius) / 1.25);
@@ -99,6 +101,47 @@
 
 .document-item:focus-visible {
   box-shadow: 0 0 0 3px rgba(233,69,96,0.12);
+}
+
+/* Botão circular no canto superior direito do card */
+.document-item .delete-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: var(--mark-btn-size);
+  height: var(--mark-btn-size);
+  border-radius: 50%;
+  border: none;
+  background: rgba(233, 69, 96, 0.12);
+  color: var(--color-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 6;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.35);
+  transition: background var(--transition-speed), transform var(--transition-speed), box-shadow var(--transition-speed);
+  padding: 0;
+}
+
+.document-item .delete-btn i {
+  font-size: 0.9rem;
+  pointer-events: none;
+}
+
+.document-item .delete-btn:hover {
+  background: rgba(233, 69, 96, 0.18);
+  transform: translateY(-2px);
+}
+
+.document-item .delete-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(233,69,96,0.12);
+}
+
+/* Esconde o botão quando o documento estiver marcado como lido */
+.document-item.is-read .delete-btn {
+  display: none;
 }
 
 /* Ícone do documento (pode conter svg ou img) */

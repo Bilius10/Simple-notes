@@ -45,4 +45,9 @@ export class NoteService {
 
     return this.http.get<PageDTO<NoteResponse>>(`${this.apiUrl}/note/${walletId}`, { params });
   }
+
+  delete(noteId: number, walletId: number): Observable<void> {
+    const params = { walletId: walletId.toString() };
+    return this.http.delete<void>(`${this.apiUrl}/note/${noteId}`, { params });
+  }
 }
