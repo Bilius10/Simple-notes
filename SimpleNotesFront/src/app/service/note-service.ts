@@ -2,12 +2,16 @@ import { Injectable } from '@angular/core';
 import {environment} from '../../environments/environment';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {User} from './user-service';
 
-interface NoteData {
+interface NoteCreate {
   title: string;
   content: string;
   walletId: number;
+}
+
+interface NoteUpdate {
+  title: string;
+  content: string;
 }
 
 export interface PageDTO<T> {
@@ -32,7 +36,7 @@ export class NoteService {
 
   constructor(private http: HttpClient) {}
 
-  create(data: NoteData) {
+  create(data: NoteCreate) {
     return this.http.post(`${this.apiUrl}/note`, data);
   }
 
@@ -49,5 +53,10 @@ export class NoteService {
   delete(noteId: number, walletId: number): Observable<void> {
     const params = { walletId: walletId.toString() };
     return this.http.delete<void>(`${this.apiUrl}/note/${noteId}`, { params });
+  }
+
+  update(noteId: number, walletId: number, data: NoteUpdate): Observable<NoteResponse> {
+    const params = { walletId: walletId.toString() };
+    return this.http.put<NoteResponse>(`${this.apiUrl}/note/${noteId}`, data, { params });
   }
 }

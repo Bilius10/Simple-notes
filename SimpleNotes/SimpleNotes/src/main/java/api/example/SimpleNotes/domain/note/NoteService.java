@@ -48,9 +48,22 @@ public class NoteService {
     }
 
     public void delete(Long noteId) {
-        Note note = noteRepository.findById(noteId)
-                .orElseThrow(() -> new ServiceException(ExceptionMessages.NOTE_NOT_FOUND.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY));
+        Note note = findById(noteId);
 
         noteRepository.delete(note);
+    }
+
+    public Note update(Long noteId, String title, String content) {
+        Note note = findById(noteId);
+
+        note.setTitle(title);
+        note.setContent(content);
+
+        return noteRepository.save(note);
+    }
+
+    public Note findById(Long noteId) {
+        return noteRepository.findById(noteId)
+                .orElseThrow(() -> new ServiceException(ExceptionMessages.NOTE_NOT_FOUND.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY));
     }
 }

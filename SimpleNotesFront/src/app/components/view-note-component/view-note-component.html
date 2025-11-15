@@ -1,11 +1,48 @@
-<div class="modal-backdrop">
-  <div class="modal-box">
-    <header class="modal-header">
-      <h3>{{ note?.title }}</h3>
-      <button class="close-btn" (click)="close()">✕</button>
-    </header>
-    <main class="modal-content">
-      <p>{{ note?.content }}</p>
-    </main>
-  </div>
+<div class="modal-backdrop" (click)="close()">
+  <dialog class="modal-box" (click)="$event.stopPropagation()" open role="dialog" aria-modal="true" aria-labelledby="note-modal-title">
+
+    <form #noteForm="ngForm" (ngSubmit)="update()">
+
+      <header class="modal-header">
+        <h2 class="modal-title" id="note-modal-title">
+          <input type="text"
+                 id="note-title-input"
+                 class="title-input"
+                 [(ngModel)]="note!.title"
+                 name="title"
+                 #titleField="ngModel"
+                 placeholder="Título da Nota"
+                 aria-label="Título da Nota"
+                 required>
+        </h2>
+        <button type="button" class="close-btn" (click)="close()" aria-label="Fechar modal">
+          <span aria-hidden="true">✕</span>
+        </button>
+      </header>
+
+      <main class="modal-content">
+        <div class="form-group">
+          <label for="note-content-textarea" class="sr-only">Conteúdo da Nota</label>
+          <textarea id="note-content-textarea"
+                    class="content-textarea"
+                    [(ngModel)]="note!.content"
+                    name="content"
+                    #contentField="ngModel"
+                    placeholder="Conteúdo da Nota"
+                    aria-label="Conteúdo da Nota"
+                    rows="10"
+                    required></textarea>
+        </div>
+
+        <footer class="modal-footer">
+          <button type="submit"
+                  class="update-btn"
+                  [disabled]="noteForm.invalid">
+            Atualizar
+          </button>
+        </footer>
+      </main>
+
+    </form>
+  </dialog>
 </div>

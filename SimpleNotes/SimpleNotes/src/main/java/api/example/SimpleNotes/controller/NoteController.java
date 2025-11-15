@@ -1,12 +1,11 @@
 package api.example.SimpleNotes.controller;
 
 import api.example.SimpleNotes.domain.note.Note;
-import api.example.SimpleNotes.domain.note.NoteRepository;
 import api.example.SimpleNotes.domain.note.NoteService;
 import api.example.SimpleNotes.domain.note.dto.request.NoteCreate;
+import api.example.SimpleNotes.domain.note.dto.request.NoteUpdate;
 import api.example.SimpleNotes.domain.note.dto.response.NoteResponse;
 import api.example.SimpleNotes.domain.user.User;
-import api.example.SimpleNotes.domain.wallet_user.WalletPermission;
 import api.example.SimpleNotes.infrastructure.dto.PageDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -68,5 +67,18 @@ public class NoteController {
                                        @RequestParam Long walletId) {
         noteService.delete(noteId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{noteId}")
+    @PreAuthorize("hasRole('USER') and @wus.verifyHasPermission(#walletId, principal.id, T(api.example.SimpleNotes.domain.wallet_user.WalletPermission).UPDATE)")
+    public ResponseEntity<NoteResponse> update(@PathVariable Long noteId,
+                                               @Valid @RequestBody NoteUpdate noteUpdate,
+                                               @AuthenticationPrincipal User authenticatedUser,
+                                               @RequestParam Long walletId) {
+
+        Note note = noteService.update(noteId, noteUpdate.title(), noteUpdate.content());
+        NoteResponse response = new NoteResponse(note);
+
+        return ResponseEntity.ok().body(response);
     }
 }
