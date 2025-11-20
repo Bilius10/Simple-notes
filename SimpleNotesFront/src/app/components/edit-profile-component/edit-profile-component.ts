@@ -37,7 +37,7 @@ export class EditProfileComponent {
     };
 
     if (isPlatformBrowser(this.platformId)) {
-      this.userService.updateUser(sessionStorage.getItem('id'), updateData).subscribe({
+      this.userService.updateUser(updateData).subscribe({
         next: (user) => {
           this.toastr.success("Sucesso", "Dados atualizados!");
         },

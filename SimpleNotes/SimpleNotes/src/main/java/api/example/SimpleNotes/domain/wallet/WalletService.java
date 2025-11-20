@@ -1,9 +1,8 @@
 package api.example.SimpleNotes.domain.wallet;
 
-import api.example.SimpleNotes.domain.user.UserService;
 import api.example.SimpleNotes.domain.wallet.dto.response.WalletResponse;
-import api.example.SimpleNotes.domain.wallet_user.WalletUser;
 import api.example.SimpleNotes.domain.wallet_user.WalletUserService;
+import api.example.SimpleNotes.domain.wallet_user.dto.request.PermissionRequest;
 import api.example.SimpleNotes.infrastructure.dto.PageDTO;
 import api.example.SimpleNotes.infrastructure.exception.ServiceException;
 import api.example.SimpleNotes.infrastructure.security.AuditorAwareImpl;
@@ -23,47 +22,47 @@ public class WalletService {
     private final WalletRepository repository;
     private final WalletUserService walletUserService;
     private final AuditorAwareImpl auditorAware;
-    private final UserService userService;
 
-    @Transactional(readOnly = true)
     public PageDTO<WalletResponse> findAll(Pageable pageable, Long userId) {
         Page<Wallet> wallets = repository.findAllByUserId(userId, pageable);
 
-        Page<WalletResponse> dtosPage = wallets.map(WalletResponse::new);
+        Page<WalletResponse> record = wallets.map(WalletResponse::new);
 
-        return new PageDTO<>(
-                dtosPage.getContent(),
-                wallets.getNumber(),
-                wallets.getSize(),
-                wallets.getTotalElements(),
-                wallets.getTotalPages());
+        return new PageDTO<>(record);
     }
 
     @Transactional
     public Wallet create(String name, String description, Long ownerId) {
         Wallet wallet = new Wallet(name, description);
 
-        Wallet savedWallet = repository.save(wallet);
+        wallet = repository.save(wallet);
 
-        WalletUser walletUser
-                = walletUserService.create(savedWallet.getId(), ownerId, true, true, true, true);
+        setPermissionsForOwner(wallet.getId(), ownerId);
 
-        return savedWallet;
+        return wallet;
     }
 
     @Transactional
     public void delete(Long walletId) {
-        Optional<String> currentAuditor = auditorAware.getCurrentAuditor();
-
-        Wallet wallet = repository.findByIdAndCreatedBy(walletId, currentAuditor.get())
-                .orElseThrow(() -> new ServiceException(WALLET_NOT_FOUND.getMessage(), HttpStatus.NOT_FOUND));
+        Wallet wallet = getWalletByCurrentAuditor(walletId);
 
         repository.delete(wallet);
     }
 
-    @Transactional(readOnly = true)
     public Wallet findById(Long walletId, Long userId) {
         return repository.findWalletByIdAndMemberId(walletId, userId)
+                .orElseThrow(() -> new ServiceException(WALLET_NOT_FOUND.getMessage(), HttpStatus.NOT_FOUND));
+    }
+
+    private void setPermissionsForOwner(Long walletId, Long userId) {
+        PermissionRequest permission = new PermissionRequest(true, true, true);
+        walletUserService.create(walletId, userId, permission);
+    }
+
+    private Wallet getWalletByCurrentAuditor(Long walletId) {
+        Optional<String> currentAuditor = auditorAware.getCurrentAuditor();
+
+        return repository.findByIdAndCreatedBy(walletId, currentAuditor.get())
                 .orElseThrow(() -> new ServiceException(WALLET_NOT_FOUND.getMessage(), HttpStatus.NOT_FOUND));
     }
 }

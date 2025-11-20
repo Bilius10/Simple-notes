@@ -2,6 +2,7 @@ package api.example.SimpleNotes.domain.wallet_user;
 
 import api.example.SimpleNotes.domain.user.User;
 import api.example.SimpleNotes.domain.wallet.Wallet;
+import api.example.SimpleNotes.domain.wallet_user.dto.request.PermissionRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -44,7 +45,7 @@ public class WalletUser {
     @Column(name = "canDelete")
     private Boolean canDelete;
 
-    @Column(name = "canView ")
+    @Column(name = "canView", columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean canView;
 
     @CreatedBy
@@ -63,12 +64,11 @@ public class WalletUser {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public WalletUser(Wallet wallet, User user, Boolean canCreate, Boolean canUpdate, Boolean canDelete, Boolean canView) {
+    public WalletUser(Wallet wallet, User user, PermissionRequest permission) {
         this.wallet = wallet;
         this.user = user;
-        this.canCreate = canCreate;
-        this.canUpdate = canUpdate;
-        this.canDelete = canDelete;
-        this.canView = canView;
+        this.canCreate = permission.canCreate();
+        this.canUpdate = permission.canUpdate();
+        this.canDelete = permission.canDelete();
     }
 }

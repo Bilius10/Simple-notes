@@ -39,7 +39,7 @@ export class UserService {
     return this.http.get<User>(`${this.apiUrl}/user/${id}`);
   }
 
-  updateUser(id: string | null, userData: { name: string; email: string }): Observable<User> {
-    return this.http.put<User>(`${this.apiUrl}/user/${id}`, userData);
+  updateUser(userData: { name: string; email: string }): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/user}`, userData);
   }
 }

@@ -1,11 +1,9 @@
 package api.example.SimpleNotes.domain.note;
 
 import api.example.SimpleNotes.domain.note.dto.response.NoteResponse;
-import api.example.SimpleNotes.domain.user.dto.response.UserResponse;
+import api.example.SimpleNotes.domain.notification.NotificationService;
 import api.example.SimpleNotes.domain.wallet.Wallet;
 import api.example.SimpleNotes.domain.wallet.WalletService;
-import api.example.SimpleNotes.domain.wallet_user.WalletPermission;
-import api.example.SimpleNotes.domain.wallet_user.WalletUserService;
 import api.example.SimpleNotes.infrastructure.dto.PageDTO;
 import api.example.SimpleNotes.infrastructure.exception.ExceptionMessages;
 import api.example.SimpleNotes.infrastructure.exception.ServiceException;
@@ -14,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,8 +22,8 @@ public class NoteService {
 
     private final NoteRepository noteRepository;
     private final WalletService walletService;
-    private final WalletUserService walletUserService;
-    
+
+    @Transactional
     public Note create(String title, String content, Long walletId, Long userId) {
         Wallet wallet = walletService.findById(walletId, userId);
 
@@ -36,23 +35,19 @@ public class NoteService {
     public PageDTO<NoteResponse> findAll(Long walletId, Pageable pageable) {
         Page<Note> notes = noteRepository.findAllByWalletId(walletId, pageable);
 
-        Page<NoteResponse> dtosPage = notes.map(NoteResponse::new);
+        Page<NoteResponse> record = notes.map(NoteResponse::new);
 
-        return new PageDTO<>(
-                dtosPage.getContent(),
-                notes.getNumber(),
-                notes.getSize(),
-                notes.getTotalElements(),
-                notes.getTotalPages());
-
+        return new PageDTO<>(record);
     }
 
+    @Transactional
     public void delete(Long noteId) {
         Note note = findById(noteId);
 
         noteRepository.delete(note);
     }
 
+    @Transactional
     public Note update(Long noteId, String title, String content) {
         Note note = findById(noteId);
 
@@ -62,6 +57,7 @@ public class NoteService {
         return noteRepository.save(note);
     }
 
+    @Transactional(readOnly = true)
     public Note findById(Long noteId) {
         return noteRepository.findById(noteId)
                 .orElseThrow(() -> new ServiceException(ExceptionMessages.NOTE_NOT_FOUND.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY));

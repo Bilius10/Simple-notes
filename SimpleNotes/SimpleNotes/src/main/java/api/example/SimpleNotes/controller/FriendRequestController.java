@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -74,16 +73,19 @@ public class FriendRequestController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Void> delete(@PathVariable long id, @AuthenticationPrincipal User authenticatedUser) {
-        service.delete(id);
+    public ResponseEntity<Void> delete(@PathVariable long id,
+                                       @AuthenticationPrincipal User authenticatedUser) {
+        service.delete(id, authenticatedUser.getId());
 
         return ResponseEntity.noContent().build();
     }
     
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<FriendRequestResponse> addFriend(@PathVariable long id, @RequestBody @Valid AddFriendRequest addFriendRequest) {
-        FriendRequestResponse response = service.addFriend(id, addFriendRequest.status());
+    public ResponseEntity<FriendRequestResponse> respondToRequest(@PathVariable long id,
+                                                           @RequestBody @Valid AddFriendRequest addFriendRequest,
+                                                           @AuthenticationPrincipal User authenticatedUser) {
+        FriendRequestResponse response = service.respondToRequest(id, addFriendRequest.status(), authenticatedUser.getId());
 
         return ResponseEntity.ok().body(response);
     }

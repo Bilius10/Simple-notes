@@ -5,11 +5,11 @@ import api.example.SimpleNotes.domain.user.dto.request.UserRequest;
 import api.example.SimpleNotes.domain.user.dto.response.LoginResponseUser;
 import api.example.SimpleNotes.domain.user.dto.response.UserResponse;
 import api.example.SimpleNotes.domain.user_token.TokenType;
+import api.example.SimpleNotes.domain.user_token.UserToken;
 import api.example.SimpleNotes.domain.user_token.UserTokenService;
 import api.example.SimpleNotes.infrastructure.dto.PageDTO;
 import api.example.SimpleNotes.infrastructure.email.dto.ConfirmEmailEvent;
 import api.example.SimpleNotes.infrastructure.email.dto.ForgotPasswordEvent;
-import api.example.SimpleNotes.infrastructure.security.AuditorAwareImpl;
 import api.example.SimpleNotes.infrastructure.security.TokenService;
 import lombok.RequiredArgsConstructor;
 import api.example.SimpleNotes.infrastructure.exception.ServiceException;
@@ -37,31 +37,25 @@ public class UserService {
     @Transactional
     public UserResponse register(String email, String name, String password) {
 
-        this.validateRegistrationData(email, name);
+        validateRegistrationData(email, name);
 
         String passwordEncoder = encoder.encode(password);
 
         User user = new User(email, name, passwordEncoder);
 
-        User savedUser = repository.save(user);
+        user = repository.save(user);
 
-        this.saveUserTokenAndSendEmail(savedUser);
+        saveUserTokenAndSendEmail(user);
 
-        return new UserResponse(savedUser);
+        return new UserResponse(user);
     }
 
-    @Transactional(readOnly = true)
     public LoginResponseUser login(String email, String password) {
-        User user = repository.findByEmail(email)
-                .orElseThrow(() -> new ServiceException(USER_NOT_FOUND.getMessage(), HttpStatus.NOT_FOUND));
+        User user = findUserByEmail(email);
 
-        if(!user.isAccountNonLocked()) {
-            this.saveUserTokenAndSendEmail(user);
-        }
+        handleLockedAccount(user);
 
-        if(!encoder.matches(password, user.getPassword())) {
-            throw new ServiceException(INVALID_CREDENTIALS.getMessage(), HttpStatus.UNAUTHORIZED);
-        }
+        validatePassword(password, user.getPassword());
 
         String generatedToken = tokenService.generateToken(user);
 
@@ -81,14 +75,11 @@ public class UserService {
 
     @Transactional
     public void forgotPassword(String email) {
-        User user = repository.findByEmail(email)
-                .orElseThrow(() -> new ServiceException(USER_NOT_FOUND.getMessage(), HttpStatus.NOT_FOUND));
+        User user = findUserByEmail(email);
 
-        String rawToken = UUID.randomUUID().toString();
+        UserToken userToken = userTokenService.saveUserToken(user, TokenType.EMAIL_VERIFICATION_TOKEN);
 
-        userTokenService.saveUserToken(user, rawToken, TokenType.EMAIL_VERIFICATION_TOKEN);
-
-        eventPublisher.publishEvent(new ForgotPasswordEvent(user.getEmail(), rawToken, user.getName()));
+        eventPublisher.publishEvent(new ForgotPasswordEvent(user.getEmail(), userToken.getTokenHash(), user.getName()));
     }
 
     @Transactional
@@ -104,21 +95,14 @@ public class UserService {
         repository.save(user);
     }
 
-    @Transactional(readOnly = true)
     public PageDTO<UserResponse> findAll(Pageable pageable, Long id) {
         Page<User> users = repository.findAllByIsAccountNonLockedIsTrueAndIdNot(pageable, id);
 
-        Page<UserResponse> dtosPage = users.map(UserResponse::new);
+        Page<UserResponse> record = users.map(UserResponse::new);
 
-        return new PageDTO<>(
-                dtosPage.getContent(),
-                users.getNumber(),
-                users.getSize(),
-                users.getTotalElements(),
-                users.getTotalPages());
+        return new PageDTO<>(record);
     }
 
-    @Transactional(readOnly = true)
     public User findById(Long id) {
         return repository.findByIdAndIsAccountNonLockedIsTrue(id)
                 .orElseThrow(() -> new ServiceException(USER_NOT_FOUND.getMessage(), HttpStatus.NOT_FOUND));
@@ -126,19 +110,10 @@ public class UserService {
 
     @Transactional
     public User update(Long id, UserRequest userRequest) {
-        User user = this.findById(id);
+        User user = findById(id);
 
-        if (!user.getEmail().equals(userRequest.email())) {
-            validadeIfEmailExists(userRequest.email());
-            user.setEmail(userRequest.email());
-            user.setAccountNonLocked(false);
-            this.saveUserTokenAndSendEmail(user);
-        }
-
-        if (!user.getName().equals(userRequest.name())) {
-            validadeIfNameExists(userRequest.name());
-            user.setName(userRequest.name());
-        }
+        handleEmailUpdate(user, userRequest.email());
+        handleNameUpdate(user, userRequest.name());
 
         notificationService.save(user,"Dados atualizados com sucesso");
         return user;
@@ -170,10 +145,43 @@ public class UserService {
     }
 
     private void saveUserTokenAndSendEmail(User user) {
-        String rawToken = UUID.randomUUID().toString();
+        UserToken userToken = userTokenService.saveUserToken(user, TokenType.EMAIL_VERIFICATION_TOKEN);
 
-        userTokenService.saveUserToken(user, rawToken, TokenType.EMAIL_VERIFICATION_TOKEN);
+        eventPublisher.publishEvent(new ConfirmEmailEvent(user.getEmail(), userToken.getTokenHash(), user.getName()));
+    }
 
-        eventPublisher.publishEvent(new ConfirmEmailEvent(user.getEmail(), rawToken, user.getName()));
+    private User findUserByEmail(String email) {
+        return repository.findByEmail(email)
+                .orElseThrow(() -> new ServiceException(USER_NOT_FOUND.getMessage(), HttpStatus.NOT_FOUND));
+    }
+
+    private void handleLockedAccount(User user) {
+        if (!user.isAccountNonLocked()) {
+            this.saveUserTokenAndSendEmail(user);
+        }
+    }
+
+    private void validatePassword(String rawPassword, String encodedPassword) {
+        if (!encoder.matches(rawPassword, encodedPassword)) {
+            throw new ServiceException(INVALID_CREDENTIALS.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    private void handleEmailUpdate(User user, String newEmail) {
+        if (!user.getEmail().equals(newEmail)) {
+            validadeIfEmailExists(newEmail);
+
+            user.setEmail(newEmail);
+
+            user.setAccountNonLocked(false);
+            this.saveUserTokenAndSendEmail(user);
+        }
+    }
+
+    private void handleNameUpdate(User user, String newName) {
+        if (!user.getName().equals(newName)) {
+            validadeIfNameExists(newName);
+            user.setName(newName);
+        }
     }
 }

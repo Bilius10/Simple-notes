@@ -43,7 +43,8 @@ public class WalletController {
 
     @PostMapping
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<WalletResponse> create(@AuthenticationPrincipal User authenticatedUser, @Valid @RequestBody WalletRequest request) {
+    public ResponseEntity<WalletResponse> create(@AuthenticationPrincipal User authenticatedUser,
+                                                 @Valid @RequestBody WalletRequest request) {
         Wallet wallet = service.create(request.name(), request.description(), authenticatedUser.getId());
         WalletResponse response = new WalletResponse(wallet);
 
@@ -65,7 +66,7 @@ public class WalletController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<WalletResponse> get(@AuthenticationPrincipal User authenticatedUser, @PathVariable Long id) {
+    public ResponseEntity<WalletResponse> findById(@AuthenticationPrincipal User authenticatedUser, @PathVariable Long id) {
         Wallet wallet = service.findById(id, authenticatedUser.getId());
         WalletResponse walletResponse = new WalletResponse(wallet);
 

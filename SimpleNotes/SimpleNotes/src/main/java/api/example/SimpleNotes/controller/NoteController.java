@@ -49,7 +49,6 @@ public class NoteController {
             @RequestParam(defaultValue = "10", required = false) int size,
             @RequestParam(defaultValue = "title", required = false) String sortBy,
             @RequestParam(defaultValue = "true", required = false) boolean ascending,
-            @AuthenticationPrincipal User authenticatedUser,
             @PathVariable Long walletId
     ) {
         Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
@@ -63,7 +62,6 @@ public class NoteController {
     @DeleteMapping("/{noteId}")
     @PreAuthorize("hasRole('USER') and @wus.verifyHasPermission(#walletId, principal.id, T(api.example.SimpleNotes.domain.wallet_user.WalletPermission).DELETE)")
     public ResponseEntity<Void> delete(@PathVariable Long noteId,
-                                       @AuthenticationPrincipal User authenticatedUser,
                                        @RequestParam Long walletId) {
         noteService.delete(noteId);
         return ResponseEntity.noContent().build();
@@ -73,7 +71,6 @@ public class NoteController {
     @PreAuthorize("hasRole('USER') and @wus.verifyHasPermission(#walletId, principal.id, T(api.example.SimpleNotes.domain.wallet_user.WalletPermission).UPDATE)")
     public ResponseEntity<NoteResponse> update(@PathVariable Long noteId,
                                                @Valid @RequestBody NoteUpdate noteUpdate,
-                                               @AuthenticationPrincipal User authenticatedUser,
                                                @RequestParam Long walletId) {
 
         Note note = noteService.update(noteId, noteUpdate.title(), noteUpdate.content());

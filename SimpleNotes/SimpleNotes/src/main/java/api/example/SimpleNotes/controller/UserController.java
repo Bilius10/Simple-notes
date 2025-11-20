@@ -48,17 +48,18 @@ public class UserController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<UserResponse> update(@PathVariable Long id, @RequestBody @Valid UserRequest userRequest) {
-        User userEntity = service.update(id, userRequest);
+    public ResponseEntity<UserResponse> update(@AuthenticationPrincipal User authenticatedUser,
+                                               @RequestBody @Valid UserRequest userRequest) {
+        User userEntity = service.update(authenticatedUser.getId(), userRequest);
         UserResponse response = new UserResponse(userEntity);
 
         return ResponseEntity.ok().body(response);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        service.delete(id);
+    public ResponseEntity<Void> delete(@AuthenticationPrincipal User authenticatedUser) {
+        service.delete(authenticatedUser.getId());
 
         return ResponseEntity.noContent().build();
     }
