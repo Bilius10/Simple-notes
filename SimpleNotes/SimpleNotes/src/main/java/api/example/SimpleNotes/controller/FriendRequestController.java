@@ -27,7 +27,7 @@ public class FriendRequestController {
 
     private final FriendRequestService service;
 
-    @GetMapping("friends")
+    @GetMapping("/friends")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<PageDTO<FriendRequestListResponse>> findAllFriends(
             @RequestParam(defaultValue = "0", required = false) int page,
@@ -42,7 +42,7 @@ public class FriendRequestController {
         return ResponseEntity.ok().body(service.findAllFriends(currentUser.getId(), pageable));
     }
 
-    @GetMapping("pendings")
+    @GetMapping("/pendings")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<PageDTO<FriendRequestListResponse>> findAllPendingFriendRequests(
             @RequestParam(defaultValue = "0", required = false) int page,

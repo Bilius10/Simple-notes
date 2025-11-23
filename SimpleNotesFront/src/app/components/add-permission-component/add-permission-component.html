@@ -1,0 +1,106 @@
+<main class="permissions-container">
+  <div class="permissions-card">
+    <header class="card-header">
+      <h1>Gerenciar Acessos</h1>
+      <p>Configure quem pode acessar e modificar suas carteiras.</p>
+    </header>
+
+    <section class="add-section">
+      <h3>Adicionar Novo Usuário</h3>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Selecione a Carteira</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-wallet"></i>
+            <select
+              [ngModel]="selectedWalletId()"
+              (ngModelChange)="selectedWalletId.set($event); onWalletSelect()">
+              <option [ngValue]="null" disabled>Escolha uma carteira...</option>
+              <option *ngFor="let w of wallets()" [ngValue]="w.id">{{ w.name }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Selecione o Usuário</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-user"></i>
+            <select [ngModel]="selectedUserId()" (ngModelChange)="selectedUserId.set($event)">
+              <option [ngValue]="null" disabled>Escolha um amigo...</option>
+              <option *ngFor="let f of availableUsers()" [ngValue]="f.userResponse.id">
+                {{ f.userResponse.name }} ({{ f.userResponse.email }})
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="permissions-toggles">
+        <label class="toggle-item">
+          <input type="checkbox" [(ngModel)]="newPermissions().canCreate">
+          <span>Criar</span>
+        </label>
+        <label class="toggle-item">
+          <input type="checkbox" [(ngModel)]="newPermissions().canUpdate">
+          <span>Editar</span>
+        </label>
+        <label class="toggle-item">
+          <input type="checkbox" [(ngModel)]="newPermissions().canDelete">
+          <span>Excluir</span>
+        </label>
+
+        <button
+          class="btn btn-primary"
+          [disabled]="!selectedWalletId() || !selectedUserId()"
+          (click)="addPermission()">
+          <i class="fa-solid fa-plus"></i> Vincular
+        </button>
+      </div>
+    </section>
+
+    <div class="separator"></div>
+
+    <section class="list-section" *ngIf="selectedWalletId()">
+      <h3>Usuários com Acesso</h3>
+
+      <div *ngIf="isLoading()" class="loading-spinner"></div>
+
+      <div *ngIf="!isLoading() && existingPermissions().length === 0" class="no-results">
+        Nenhum usuário vinculado a esta carteira.
+      </div>
+
+      <div class="permission-list" *ngIf="!isLoading()">
+        <div class="list-header">
+          <span>Usuário</span>
+          <span class="center-text">Criar</span>
+          <span class="center-text">Editar</span>
+          <span class="center-text">Excluir</span>
+        </div>
+
+        <div *ngFor="let item of existingPermissions()" class="list-item">
+          <div class="user-info">
+            <div class="avatar">{{ item.username.substring(0,2).toUpperCase() }}</div>
+            <span>{{ item.username }}</span>
+          </div>
+
+          <div class="center-text">
+            <input type="checkbox"
+                   [(ngModel)]="item.permission.canCreate"
+                   (change)="updatePermission(item, selectedWalletId()!)">
+          </div>
+          <div class="center-text">
+            <input type="checkbox"
+                   [(ngModel)]="item.permission.canUpdate"
+                   (change)="updatePermission(item, selectedWalletId()!)">
+          </div>
+          <div class="center-text">
+            <input type="checkbox"
+                   [(ngModel)]="item.permission.canDelete"
+                   (change)="updatePermission(item, selectedWalletId()!)">
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>

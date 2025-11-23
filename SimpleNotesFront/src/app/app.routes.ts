@@ -17,6 +17,7 @@ import {
 import {CreateWalletComponent} from './components/create-wallet-component/create-wallet-component';
 import {ViewWalletsComponent} from './components/view-wallets-component/view-wallets-component';
 import {ViewWalletComponent} from './components/view-wallet-component/view-wallet-component';
+import {AddPermissionComponent} from './components/add-permission-component/add-permission-component';
 
 
 export const routes: Routes = [
@@ -42,7 +43,8 @@ export const routes: Routes = [
       { path: 'pending', component: PendingFriendRequestsComponent},
       { path: 'create-wallet', component: CreateWalletComponent},
       { path: 'view-wallets', component: ViewWalletsComponent},
-      { path: 'wallet/:id', component: ViewWalletComponent}
+      { path: 'wallet/:id', component: ViewWalletComponent},
+      { path: 'add-permission', component: AddPermissionComponent}
     ]
   },
 

@@ -66,8 +66,7 @@
 /* ===== Lista de Documentos (grid responsivo) ===== */
 .documents-list {
   display: grid;
-  /* força até 10 colunas; quando houver mais, quebra para a próxima linha */
-  grid-template-columns: repeat(10, minmax(var(--doc-min-width), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(var(--doc-min-width), 1fr));
   gap: var(--docs-gap);
   align-items: start;
   margin-top: 1rem;
