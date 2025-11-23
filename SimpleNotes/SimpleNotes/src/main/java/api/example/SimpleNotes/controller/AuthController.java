@@ -6,6 +6,7 @@ import api.example.SimpleNotes.domain.user.dto.request.RegisterUser;
 import api.example.SimpleNotes.domain.user.dto.request.ResetPassword;
 import api.example.SimpleNotes.domain.user.dto.response.LoginResponseUser;
 import api.example.SimpleNotes.domain.user.dto.response.UserResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.net.URI;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@Tag(name = "Autenticação", description = "Gerencia o registro, login e operações de recuperação de senha dos usuários.")
 public class AuthController {
 
     private final UserService service;

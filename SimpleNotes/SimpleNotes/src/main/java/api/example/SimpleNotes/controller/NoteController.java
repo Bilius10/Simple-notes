@@ -7,6 +7,8 @@ import api.example.SimpleNotes.domain.note.dto.request.NoteUpdate;
 import api.example.SimpleNotes.domain.note.dto.response.NoteResponse;
 import api.example.SimpleNotes.domain.user.User;
 import api.example.SimpleNotes.infrastructure.dto.PageDTO;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +24,8 @@ import java.net.URI;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/note")
+@Tag(name = "Notas", description = "Gerencia as notas dentro de uma carteira (Wallet) e requer permissão explícita.")
+@SecurityRequirement(name = "bearerAuth")
 public class NoteController {
 
     private  final NoteService noteService;

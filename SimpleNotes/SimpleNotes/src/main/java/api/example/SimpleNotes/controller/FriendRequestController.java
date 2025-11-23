@@ -7,6 +7,8 @@ import api.example.SimpleNotes.domain.friend_request.dto.response.FriendRequestL
 import api.example.SimpleNotes.domain.friend_request.dto.response.FriendRequestResponse;
 import api.example.SimpleNotes.domain.user.User;
 import api.example.SimpleNotes.infrastructure.dto.PageDTO;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +25,8 @@ import java.net.URI;
 @RestController
 @RequestMapping("/friend-request")
 @RequiredArgsConstructor
+@Tag(name = "Solicitações de Amizade", description = "Gerencia a lista de amigos e as solicitações de amizade (criação, listagem e resposta).")
+@SecurityRequirement(name = "bearerAuth")
 public class FriendRequestController {
 
     private final FriendRequestService service;

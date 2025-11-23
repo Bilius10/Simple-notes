@@ -6,6 +6,8 @@ import api.example.SimpleNotes.domain.wallet_user.dto.request.WalletUserRequest;
 import api.example.SimpleNotes.domain.wallet_user.dto.response.ListWalletUser;
 import api.example.SimpleNotes.domain.wallet_user.dto.response.WalletUserResponse;
 import api.example.SimpleNotes.infrastructure.dto.PageDTO;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +23,8 @@ import java.net.URI;
 @RestController
 @RequestMapping("/wallet-user")
 @RequiredArgsConstructor
+@Tag(name = "Colaboradores da Carteira", description = "Gerencia a associação de usuários a uma carteira (Wallet) e suas permissões de acesso.")
+@SecurityRequirement(name = "bearerAuth")
 public class WalletUserController {
 
     private final WalletUserService walletUserService;

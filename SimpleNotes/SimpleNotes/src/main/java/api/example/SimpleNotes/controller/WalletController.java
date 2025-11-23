@@ -6,6 +6,8 @@ import api.example.SimpleNotes.domain.wallet.WalletService;
 import api.example.SimpleNotes.domain.wallet.dto.request.WalletRequest;
 import api.example.SimpleNotes.domain.wallet.dto.response.WalletResponse;
 import api.example.SimpleNotes.infrastructure.dto.PageDTO;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +24,8 @@ import java.net.URI;
 @RestController
 @RequestMapping("/wallet")
 @RequiredArgsConstructor
+@Tag(name = "Carteiras (Wallets)", description = "Gerencia os contêineres principais de notas (Wallets).")
+@SecurityRequirement(name = "bearerAuth")
 public class WalletController {
 
     private final WalletService service;

@@ -5,6 +5,8 @@ import api.example.SimpleNotes.domain.user.UserService;
 import api.example.SimpleNotes.domain.user.dto.request.UserRequest;
 import api.example.SimpleNotes.domain.user.dto.response.UserResponse;
 import api.example.SimpleNotes.infrastructure.dto.PageDTO;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
+@Tag(name = "Usuários", description = "Gerencia a busca e manipulação de perfis de usuário.")
+@SecurityRequirement(name = "bearerAuth")
 public class UserController {
 
     private final UserService service;

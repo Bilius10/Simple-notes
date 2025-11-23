@@ -4,6 +4,8 @@ import api.example.SimpleNotes.domain.notification.NotificationService;
 import api.example.SimpleNotes.domain.notification.dto.response.NotificationResponse;
 import api.example.SimpleNotes.domain.user.User;
 import api.example.SimpleNotes.infrastructure.dto.PageDTO;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/notification")
 @RequiredArgsConstructor
+@Tag(name = "Notificações", description = "Gerencia a listagem, contagem e marcação de notificações do usuário autenticado.")
+@SecurityRequirement(name = "bearerAuth")
 public class NotificationController {
 
     private final NotificationService service;
