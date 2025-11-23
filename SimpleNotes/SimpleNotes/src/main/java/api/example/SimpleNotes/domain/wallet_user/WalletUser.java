@@ -45,7 +45,7 @@ public class WalletUser {
     @Column(name = "canDelete")
     private Boolean canDelete;
 
-    @Column(name = "canView", columnDefinition = "BOOLEAN DEFAULT TRUE")
+    @Column(name = "canView")
     private Boolean canView;
 
     @CreatedBy
@@ -67,6 +67,13 @@ public class WalletUser {
     public WalletUser(Wallet wallet, User user, PermissionRequest permission) {
         this.wallet = wallet;
         this.user = user;
+        this.canCreate = permission.canCreate();
+        this.canUpdate = permission.canUpdate();
+        this.canDelete = permission.canDelete();
+        this.canView = true;
+    }
+
+    public void updatePermission(PermissionRequest permission) {
         this.canCreate = permission.canCreate();
         this.canUpdate = permission.canUpdate();
         this.canDelete = permission.canDelete();

@@ -34,12 +34,12 @@ public class FriendRequestController {
             @RequestParam(defaultValue = "10", required = false) int size,
             @RequestParam(defaultValue = "id", required = false) String sortBy,
             @RequestParam(defaultValue = "true", required = false) boolean ascending,
-            @AuthenticationPrincipal User authenticatedUser
+            @AuthenticationPrincipal User currentUser
     ) {
         Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        return ResponseEntity.ok().body(service.findAllFriends(authenticatedUser.getId(), pageable));
+        return ResponseEntity.ok().body(service.findAllFriends(currentUser.getId(), pageable));
     }
 
     @GetMapping("pendings")
@@ -49,18 +49,18 @@ public class FriendRequestController {
             @RequestParam(defaultValue = "10", required = false) int size,
             @RequestParam(defaultValue = "id", required = false) String sortBy,
             @RequestParam(defaultValue = "true", required = false) boolean ascending,
-            @AuthenticationPrincipal User authenticatedUser
+            @AuthenticationPrincipal User currentUser
     ) {
         Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        return ResponseEntity.ok().body(service.findAllPendingFriendRequests(authenticatedUser.getId(), pageable));
+        return ResponseEntity.ok().body(service.findAllPendingFriendRequests(currentUser.getId(), pageable));
     }
 
     @PostMapping
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<FriendRequestResponse> create(@RequestBody @Valid FriendRequestCreateRequest friendRequest) {
-        FriendRequestResponse response = service.create(friendRequest.senderId(), friendRequest.receiverId());
+    public ResponseEntity<FriendRequestResponse> create(@RequestBody @Valid FriendRequestCreateRequest request) {
+        FriendRequestResponse response = service.create(request.senderId(), request.receiverId());
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -74,8 +74,8 @@ public class FriendRequestController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> delete(@PathVariable long id,
-                                       @AuthenticationPrincipal User authenticatedUser) {
-        service.delete(id, authenticatedUser.getId());
+                                       @AuthenticationPrincipal User currentUser) {
+        service.delete(id, currentUser.getId());
 
         return ResponseEntity.noContent().build();
     }
@@ -83,9 +83,9 @@ public class FriendRequestController {
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<FriendRequestResponse> respondToRequest(@PathVariable long id,
-                                                           @RequestBody @Valid AddFriendRequest addFriendRequest,
-                                                           @AuthenticationPrincipal User authenticatedUser) {
-        FriendRequestResponse response = service.respondToRequest(id, addFriendRequest.status(), authenticatedUser.getId());
+                                                           @RequestBody @Valid AddFriendRequest request,
+                                                           @AuthenticationPrincipal User currentUser) {
+        FriendRequestResponse response = service.respondToRequest(id, request.status(), currentUser.getId());
 
         return ResponseEntity.ok().body(response);
     }

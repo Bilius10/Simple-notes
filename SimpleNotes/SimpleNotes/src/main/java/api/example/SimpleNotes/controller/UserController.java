@@ -29,37 +29,37 @@ public class UserController {
             @RequestParam(defaultValue = "10", required = false) int size,
             @RequestParam(defaultValue = "name", required = false) String sortBy,
             @RequestParam(defaultValue = "true", required = false) boolean ascending,
-            @AuthenticationPrincipal User authenticatedUser
+            @AuthenticationPrincipal User currentUser
     ) {
         Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        return ResponseEntity.ok().body(service.findAll(pageable, authenticatedUser.getId()));
+        return ResponseEntity.ok().body(service.findAll(pageable, currentUser.getId()));
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UserResponse> findById(@PathVariable Long id) {
-        User userEntity = service.findById(id);
-        UserResponse response = new UserResponse(userEntity);
+        User user = service.findById(id);
+        UserResponse response = new UserResponse(user);
 
         return ResponseEntity.ok().body(response);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<UserResponse> update(@AuthenticationPrincipal User authenticatedUser,
-                                               @RequestBody @Valid UserRequest userRequest) {
-        User userEntity = service.update(authenticatedUser.getId(), userRequest);
-        UserResponse response = new UserResponse(userEntity);
+    public ResponseEntity<UserResponse> update(@AuthenticationPrincipal User currentUser,
+                                               @RequestBody @Valid UserRequest request) {
+        User user = service.update(currentUser.getId(), request);
+        UserResponse response = new UserResponse(user);
 
         return ResponseEntity.ok().body(response);
     }
 
     @DeleteMapping
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Void> delete(@AuthenticationPrincipal User authenticatedUser) {
-        service.delete(authenticatedUser.getId());
+    public ResponseEntity<Void> delete(@AuthenticationPrincipal User currentUser) {
+        service.delete(currentUser.getId());
 
         return ResponseEntity.noContent().build();
     }

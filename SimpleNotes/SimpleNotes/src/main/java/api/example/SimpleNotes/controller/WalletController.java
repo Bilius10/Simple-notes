@@ -33,19 +33,19 @@ public class WalletController {
             @RequestParam(defaultValue = "10", required = false) int size,
             @RequestParam(defaultValue = "name", required = false) String sortBy,
             @RequestParam(defaultValue = "true", required = false) boolean ascending,
-            @AuthenticationPrincipal User authenticatedUser
+            @AuthenticationPrincipal User currentUser
     ) {
         Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        return ResponseEntity.ok().body(service.findAll(pageable, authenticatedUser.getId()));
+        return ResponseEntity.ok().body(service.findAll(pageable, currentUser.getId()));
     }
 
     @PostMapping
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<WalletResponse> create(@AuthenticationPrincipal User authenticatedUser,
+    public ResponseEntity<WalletResponse> create(@AuthenticationPrincipal User currentUser,
                                                  @Valid @RequestBody WalletRequest request) {
-        Wallet wallet = service.create(request.name(), request.description(), authenticatedUser.getId());
+        Wallet wallet = service.create(request.name(), request.description(), currentUser.getId());
         WalletResponse response = new WalletResponse(wallet);
 
         URI location = ServletUriComponentsBuilder
@@ -66,8 +66,8 @@ public class WalletController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<WalletResponse> findById(@AuthenticationPrincipal User authenticatedUser, @PathVariable Long id) {
-        Wallet wallet = service.findById(id, authenticatedUser.getId());
+    public ResponseEntity<WalletResponse> findById(@AuthenticationPrincipal User currentUser, @PathVariable Long id) {
+        Wallet wallet = service.findById(id, currentUser.getId());
         WalletResponse walletResponse = new WalletResponse(wallet);
 
         return ResponseEntity.ok().body(walletResponse);

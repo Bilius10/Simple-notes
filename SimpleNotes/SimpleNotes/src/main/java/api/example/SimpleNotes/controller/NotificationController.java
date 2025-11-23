@@ -23,7 +23,7 @@ public class NotificationController {
     @GetMapping
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<PageDTO<NotificationResponse>> findAll(
-            @AuthenticationPrincipal User authenticatedUser,
+            @AuthenticationPrincipal User currentUser,
             @RequestParam(defaultValue = "0", required = false) int page,
             @RequestParam(defaultValue = "10", required = false) int size,
             @RequestParam(defaultValue = "message", required = false) String sortBy,
@@ -32,34 +32,34 @@ public class NotificationController {
         Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        return ResponseEntity.ok().body(service.findAll(pageable, authenticatedUser.getId()));
+        return ResponseEntity.ok().body(service.findAll(pageable, currentUser.getId()));
     }
 
     @GetMapping("/unread")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Long> countUnreadNotifications(
-            @AuthenticationPrincipal User authenticatedUser
+            @AuthenticationPrincipal User currentUser
     ) {
-        Long count = service.countUnreadNotifications(authenticatedUser.getId());
-        return ResponseEntity.ok().body(count);
+        Long response = service.countUnreadNotifications(currentUser.getId());
+        return ResponseEntity.ok().body(response);
     }
 
     @PatchMapping("/mark-as-read/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> markAsRead(
             @PathVariable Long id,
-            @AuthenticationPrincipal User authenticatedUser
+            @AuthenticationPrincipal User currentUser
     ) {
-        service.markAsRead(id, authenticatedUser.getId());
+        service.markAsRead(id, currentUser.getId());
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/mark-all-as-read")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> markAllAsRead(
-            @AuthenticationPrincipal User authenticatedUser
+            @AuthenticationPrincipal User currentUser
     ){
-        service.markAllAsRead(authenticatedUser.getId());
+        service.markAllAsRead(currentUser.getId());
         return ResponseEntity.noContent().build();
     }
 }

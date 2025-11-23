@@ -21,7 +21,8 @@ public enum ExceptionMessages {
     WALLET_NOT_FOUND("Cofre não encontrado"),
     USER_IS_MEMBER_OF_WALLET("Usuário já é membro do cofre"),
     INTERNAL_SERVER_ERROR("Erro interno do servidor"),
-    NOTE_NOT_FOUND("Nota não encontrada");
+    NOTE_NOT_FOUND("Nota não encontrada"),
+    WALLET_USER_NOT_FOUND("Permissão do usuario não encontrada");
 
 
     private final String message;

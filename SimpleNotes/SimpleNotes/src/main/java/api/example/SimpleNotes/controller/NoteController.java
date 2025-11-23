@@ -27,10 +27,10 @@ public class NoteController {
     private  final NoteService noteService;
 
     @PostMapping
-    @PreAuthorize("hasRole('USER') and @wus.verifyHasPermission(#noteCreate.walletId, principal.id, T(api.example.SimpleNotes.domain.wallet_user.WalletPermission).CREATE)")
-    public ResponseEntity<NoteResponse> create(@Valid @RequestBody NoteCreate noteCreate,
-                                               @AuthenticationPrincipal User authenticatedUser) {
-        Note note = noteService.create(noteCreate.title(), noteCreate.content(), noteCreate.walletId(), authenticatedUser.getId());
+    @PreAuthorize("hasRole('USER') and @wus.verifyHasPermission(#request.walletId, principal.id, T(api.example.SimpleNotes.domain.wallet_user.WalletPermission).CREATE)")
+    public ResponseEntity<NoteResponse> create(@Valid @RequestBody NoteCreate request,
+                                               @AuthenticationPrincipal User currentUser) {
+        Note note = noteService.create(request.title(), request.content(), request.walletId(), currentUser.getId());
         NoteResponse response = new NoteResponse(note);
 
         URI location = ServletUriComponentsBuilder

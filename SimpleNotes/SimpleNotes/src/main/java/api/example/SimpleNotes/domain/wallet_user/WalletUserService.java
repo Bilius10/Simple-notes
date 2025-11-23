@@ -4,18 +4,23 @@ import api.example.SimpleNotes.domain.user.User;
 import api.example.SimpleNotes.domain.user.UserService;
 import api.example.SimpleNotes.domain.wallet.Wallet;
 import api.example.SimpleNotes.domain.wallet.WalletRepository;
+import api.example.SimpleNotes.domain.wallet.dto.response.WalletResponse;
 import api.example.SimpleNotes.domain.wallet_user.dto.request.PermissionRequest;
+import api.example.SimpleNotes.domain.wallet_user.dto.response.ListWalletUser;
+import api.example.SimpleNotes.infrastructure.dto.PageDTO;
 import api.example.SimpleNotes.infrastructure.exception.ServiceException;
 import api.example.SimpleNotes.infrastructure.security.AuditorAwareImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
-import static api.example.SimpleNotes.infrastructure.exception.ExceptionMessages.USER_IS_MEMBER_OF_WALLET;
-import static api.example.SimpleNotes.infrastructure.exception.ExceptionMessages.WALLET_NOT_FOUND;
+import static api.example.SimpleNotes.infrastructure.exception.ExceptionMessages.*;
 
 @Service("wus")
 @RequiredArgsConstructor
@@ -36,6 +41,31 @@ public class WalletUserService {
         WalletUser walletUser = new WalletUser(wallet, user, permission);
 
         return walletUserRepository.save(walletUser);
+    }
+
+    @Transactional
+    public WalletUser update(Long id, PermissionRequest permission) {
+        WalletUser walletUser = findById(id);
+
+        walletUser.updatePermission(permission);
+
+        return walletUserRepository.save(walletUser);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        WalletUser walletUser = findById(id);
+
+        walletUserRepository.delete(walletUser);
+    }
+
+    public PageDTO<ListWalletUser> findAllByWalletId(Long walletId, Pageable pageable) {
+        Optional<String> currentAuditor = auditorAware.getCurrentAuditor();
+
+        Page<WalletUser> walletsUser = walletUserRepository.findAllByCreatedByAndWalletId(currentAuditor.get(), walletId, pageable);
+        Page<ListWalletUser> record = walletsUser.map(ListWalletUser::new);
+
+        return new PageDTO<>(record);
     }
 
     public boolean verifyHasPermission(Long walletId, Long userId, WalletPermission permission) {
@@ -66,5 +96,12 @@ public class WalletUserService {
         if (alreadyExists) {
             throw new ServiceException(USER_IS_MEMBER_OF_WALLET.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
+    }
+
+    private WalletUser findById(Long id) {
+        Optional<String> currentAuditor = auditorAware.getCurrentAuditor();
+
+         return walletUserRepository.findByIdAndCreatedBy(id, currentAuditor.get())
+                .orElseThrow(() -> new ServiceException(WALLET_USER_NOT_FOUND.getMessage(), HttpStatus.NOT_FOUND));
     }
 }

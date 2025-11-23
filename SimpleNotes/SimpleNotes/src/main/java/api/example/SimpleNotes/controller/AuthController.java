@@ -8,7 +8,6 @@ import api.example.SimpleNotes.domain.user.dto.response.LoginResponseUser;
 import api.example.SimpleNotes.domain.user.dto.response.UserResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -51,7 +50,6 @@ public class AuthController {
 
     @PostMapping("/forgot-password")
     public ResponseEntity<Void> forgotPassword(@RequestParam String email) {
-
         service.forgotPassword(email);
 
         return ResponseEntity.noContent().build();
