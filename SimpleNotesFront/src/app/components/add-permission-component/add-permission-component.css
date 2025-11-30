@@ -121,7 +121,8 @@ select:focus {
 /* --- LISTA / TABELA --- */
 .list-header {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  /* Mudou de 4 colunas para 5. O '0.5fr' é para o botão de excluir */
+  grid-template-columns: 2fr 1fr 1fr 1fr 0.5fr;
   padding: 0.8rem;
   background-color: #252525;
   border-radius: 0.4rem 0.4rem 0 0;
@@ -132,7 +133,8 @@ select:focus {
 
 .list-item {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  /* Mesma proporção do header para alinhar perfeitamente */
+  grid-template-columns: 2fr 1fr 1fr 1fr 0.5fr;
   padding: 1rem 0.8rem;
   border-bottom: 1px solid var(--color-border);
   align-items: center;
@@ -143,6 +145,28 @@ select:focus {
   background-color: #2a2a2a;
 }
 
+/* Estilo do botão de excluir (Lixeira) */
+.delete-btn {
+  background: #ff5252;
+  border: none;
+  color: #ff5252; /* Vermelho suave */
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.4rem;
+  border-radius: 4px;
+  transition: all 0.2s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.delete-btn:hover {
+  background-color: rgba(255, 82, 82, 0.1); /* Fundo avermelhado ao passar o mouse */
+  color: #ff1744;
+}
+
+/* Restante das classes auxiliares... */
 .user-info {
   display: flex;
   align-items: center;
@@ -163,6 +187,9 @@ select:focus {
 
 .center-text {
   text-align: center;
+  display: flex;       /* Garante centralização dos checkboxes */
+  justify-content: center;
+  align-items: center;
 }
 
 .loading-spinner {

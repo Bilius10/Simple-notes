@@ -55,11 +55,5 @@ export class RegisterComponent {
           });
         }
       });
-
-      setTimeout(() => {
-        this.name = '';
-        this.email = '';
-        this.password = '';
-      }, 2000);
   }
 }

@@ -40,6 +40,6 @@ export class UserService {
   }
 
   updateUser(userData: { name: string; email: string }): Observable<User> {
-    return this.http.put<User>(`${this.apiUrl}/user}`, userData);
+    return this.http.put<User>(`${this.apiUrl}/user`, userData);
   }
 }

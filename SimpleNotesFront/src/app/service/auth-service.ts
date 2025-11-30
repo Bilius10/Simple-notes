@@ -25,7 +25,13 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
+  isLoggedIn(): boolean {
+    const token = localStorage.getItem('token');
+    return !!token;
+  }
+
   register(data: RegisterData) {
+    console.log('Registering user with data:', data);
     return this.http.post(`${this.apiUrl}/auth/register`, data);
   }
 

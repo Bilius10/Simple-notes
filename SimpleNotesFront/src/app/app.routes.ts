@@ -18,12 +18,12 @@ import {CreateWalletComponent} from './components/create-wallet-component/create
 import {ViewWalletsComponent} from './components/view-wallets-component/view-wallets-component';
 import {ViewWalletComponent} from './components/view-wallet-component/view-wallet-component';
 import {AddPermissionComponent} from './components/add-permission-component/add-permission-component';
+import {authGuard} from './guard/auth-guard';
 
 
 export const routes: Routes = [
 
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
-
   { path: 'auth/login', component: LoginComponent },
   { path: 'auth/register', component: RegisterComponent },
   { path: 'confirm-email/:token', component: ConfirmEmailComponent },
@@ -33,6 +33,7 @@ export const routes: Routes = [
   {
     path: '',
     component: BaseComponent,
+
     children: [
       { path: 'menu', component: MenuComponent },
       { path: 'profile-card', component: ProfileCardComponent},

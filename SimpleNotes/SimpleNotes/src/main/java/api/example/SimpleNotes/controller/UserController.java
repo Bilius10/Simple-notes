@@ -50,7 +50,7 @@ public class UserController {
         return ResponseEntity.ok().body(response);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UserResponse> update(@AuthenticationPrincipal User currentUser,
                                                @RequestBody @Valid UserRequest request) {

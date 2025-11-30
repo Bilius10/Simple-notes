@@ -104,4 +104,17 @@ export class AddPermissionComponent {
       error: (err) => alert('Erro ao atualizar permissão')
     });
   }
+
+  deletedUserPermission(id: number) {
+    this.walletUserService.delete(id).subscribe({
+      next: () => {
+        alert('Permissão removida com sucesso!');
+        const wId = this.selectedWalletId();
+        if (wId) {
+          this.onWalletSelect();
+        }
+      },
+      error: (err) => alert('Erro ao remover permissão')
+    });
+  }
 }

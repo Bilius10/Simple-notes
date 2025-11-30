@@ -46,8 +46,6 @@ export class ViewWalletComponent {
       },
       error: (err) => {
         console.error('Erro ao carregar cofre:', err);
-        const errorMsg = err.error?.message || 'Falha ao carregar dados do cofre.';
-        this.toastr.error(errorMsg, 'Erro');
       }
     });
   }

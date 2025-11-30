@@ -41,7 +41,6 @@ export class ViewNoteComponent {
     this.noteService.update(this.note.id, walletId, data).subscribe({
       next: (updatedNote) => {
         this.toastr.success('Nota atualizada com sucesso.', 'Sucesso');
-        this.note = updatedNote;
       },
       error: (err) => {
         console.error('Erro ao atualizar nota:', err);

@@ -20,7 +20,8 @@
     <div *ngIf="notes().length > 0; else noDocs" class="documents-list">
       <div *ngFor="let note of notes()" class="document-item" (click)="openNoteModal(note)" title="Abrir documento">
         <button
-          class="delete-btn" (click)="deleteDocument(note.id);">
+          class="delete-btn"
+          (click)="$event.stopPropagation(); deleteDocument(note.id);">
           <i class="fa-solid fa-check"></i>
         </button>
         <div class="doc-icon" aria-hidden="true">

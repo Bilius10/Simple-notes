@@ -76,6 +76,7 @@
           <span class="center-text">Criar</span>
           <span class="center-text">Editar</span>
           <span class="center-text">Excluir</span>
+          <span class="center-text">Retirar permissão</span>
         </div>
 
         <div *ngFor="let item of existingPermissions()" class="list-item">
@@ -98,6 +99,11 @@
             <input type="checkbox"
                    [(ngModel)]="item.permission.canDelete"
                    (change)="updatePermission(item, selectedWalletId()!)">
+          </div>
+          <div class="center-text">
+            <button (click)="deletedUserPermission(item.id)" class="delete-btn" title="Remover Acesso">
+              <i class="fa-solid fa-trash"></i>
+            </button>
           </div>
         </div>
       </div>
