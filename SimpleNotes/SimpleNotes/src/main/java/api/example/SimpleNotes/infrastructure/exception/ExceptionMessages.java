@@ -25,6 +25,7 @@ public enum ExceptionMessages {
     WALLET_USER_NOT_FOUND("Permissão do usuario não encontrada");
 
 
+
     private final String message;
 
     ExceptionMessages(String message) {

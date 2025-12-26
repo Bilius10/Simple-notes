@@ -7,13 +7,20 @@ import api.example.SimpleNotes.domain.wallet.WalletService;
 import api.example.SimpleNotes.infrastructure.dto.PageDTO;
 import api.example.SimpleNotes.infrastructure.exception.ExceptionMessages;
 import api.example.SimpleNotes.infrastructure.exception.ServiceException;
+import api.example.SimpleNotes.infrastructure.pdf.PdfExtractorService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 @Service
@@ -22,6 +29,7 @@ public class NoteService {
 
     private final NoteRepository noteRepository;
     private final WalletService walletService;
+    private final PdfExtractorService pdfExtractorService;
 
     @Transactional
     public Note create(String title, String content, Long walletId, Long userId) {
@@ -61,5 +69,12 @@ public class NoteService {
     public Note findById(Long noteId) {
         return noteRepository.findById(noteId)
                 .orElseThrow(() -> new ServiceException(ExceptionMessages.NOTE_NOT_FOUND.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY));
+    }
+
+    @Transactional
+    public Note uploadFile(MultipartFile file, Long walletId, Long userId) {
+        String pdfText = pdfExtractorService.extractText(file);
+
+        return create(file.getOriginalFilename(), pdfText, walletId, userId);
     }
 }

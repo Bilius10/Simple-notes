@@ -4,6 +4,7 @@ import api.example.SimpleNotes.domain.note.Note;
 import api.example.SimpleNotes.domain.note.NoteService;
 import api.example.SimpleNotes.domain.note.dto.request.NoteCreate;
 import api.example.SimpleNotes.domain.note.dto.request.NoteUpdate;
+import api.example.SimpleNotes.domain.note.dto.request.UploadFile;
 import api.example.SimpleNotes.domain.note.dto.response.NoteResponse;
 import api.example.SimpleNotes.domain.user.User;
 import api.example.SimpleNotes.infrastructure.dto.PageDTO;
@@ -11,14 +12,20 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 
 @RequiredArgsConstructor
@@ -81,5 +88,21 @@ public class NoteController {
         NoteResponse response = new NoteResponse(note);
 
         return ResponseEntity.ok().body(response);
+    }
+
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<NoteResponse> uploadFile(@Valid @ModelAttribute UploadFile request,
+                                           @AuthenticationPrincipal User currentUser
+    ) {
+        Note note = noteService.uploadFile(request.file(), request.walletId(), currentUser.getId());
+        NoteResponse response = new NoteResponse(note);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(response.id())
+                .toUri();
+
+        return ResponseEntity.created(location).body(response);
     }
 }
