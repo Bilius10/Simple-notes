@@ -156,6 +156,14 @@ Gerencie quem tem acesso às suas carteiras.
 
 ---
 
+## <a id="docs"></a>⚙️Features futuras
+
+* Concertar pequenos bugs no front
+* Implementar criptografia assimetrica, atualmente utilizado simetrica
+* Implementar a funcionalidade de envio de documentos
+
+---
+
 ### <a id="autores"></a>👨‍💻 Autores
 
 Este projeto foi desenvolvido por:
