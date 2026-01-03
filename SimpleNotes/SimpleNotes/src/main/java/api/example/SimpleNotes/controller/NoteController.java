@@ -39,8 +39,7 @@ public class NoteController {
 
     @PostMapping
     @PreAuthorize("hasRole('USER') and @wus.verifyHasPermission(#request.walletId, principal.id, T(api.example.SimpleNotes.domain.wallet_user.WalletPermission).CREATE)")
-    public ResponseEntity<NoteResponse> create(@Valid @RequestBody NoteCreate request,
-                                               @AuthenticationPrincipal User currentUser) {
+    public ResponseEntity<NoteResponse> create(@Valid @RequestBody NoteCreate request, @AuthenticationPrincipal User currentUser) {
         Note note = noteService.create(request.title(), request.content(), request.walletId(), currentUser.getId());
         NoteResponse response = new NoteResponse(note);
 
@@ -72,18 +71,14 @@ public class NoteController {
 
     @DeleteMapping("/{noteId}")
     @PreAuthorize("hasRole('USER') and @wus.verifyHasPermission(#walletId, principal.id, T(api.example.SimpleNotes.domain.wallet_user.WalletPermission).DELETE)")
-    public ResponseEntity<Void> delete(@PathVariable Long noteId,
-                                       @RequestParam Long walletId) {
+    public ResponseEntity<Void> delete(@PathVariable Long noteId, @RequestParam Long walletId) {
         noteService.delete(noteId);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{noteId}")
     @PreAuthorize("hasRole('USER') and @wus.verifyHasPermission(#walletId, principal.id, T(api.example.SimpleNotes.domain.wallet_user.WalletPermission).UPDATE)")
-    public ResponseEntity<NoteResponse> update(@PathVariable Long noteId,
-                                               @Valid @RequestBody NoteUpdate noteUpdate,
-                                               @RequestParam Long walletId) {
-
+    public ResponseEntity<NoteResponse> update(@PathVariable Long noteId, @Valid @RequestBody NoteUpdate noteUpdate, @RequestParam Long walletId) {
         Note note = noteService.update(noteId, noteUpdate.title(), noteUpdate.content());
         NoteResponse response = new NoteResponse(note);
 
@@ -91,9 +86,7 @@ public class NoteController {
     }
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<NoteResponse> uploadFile(@Valid @ModelAttribute UploadFile request,
-                                           @AuthenticationPrincipal User currentUser
-    ) {
+    public ResponseEntity<NoteResponse> uploadFile(@Valid @ModelAttribute UploadFile request, @AuthenticationPrincipal User currentUser) {
         Note note = noteService.uploadFile(request.file(), request.walletId(), currentUser.getId());
         NoteResponse response = new NoteResponse(note);
 

@@ -59,4 +59,8 @@ export class NoteService {
     const params = { walletId: walletId.toString() };
     return this.http.put<NoteResponse>(`${this.apiUrl}/note/${noteId}`, data, { params });
   }
+
+  uploadFile(formData: FormData): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/note/upload`, formData);
+  }
 }
